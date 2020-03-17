@@ -1,0 +1,7 @@
+<resources>
+    <string name="hello">Привет'!</string>
+    <string name="hello_land">Это горизонт!</string>
+    <string name="i_m_beginner">Я новичок!</string>
+    <string name="ok_you_will_succes">Хорошо! Вы станете разработчиком)</string>
+    <string name="im_expirienced">Я уже опытный разработчик</string>
+</resources>
