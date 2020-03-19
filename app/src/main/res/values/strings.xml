@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name" translatable="false">Homework</string>
-    <string name="hello">Hello!</string>
-    <string name="hello_land">It\'s landscope!</string>
-    <string name="i_m_beginner">I\'m beginner!</string>
-    <string name="ok_you_will_succes">Ok! You will succes)</string>
-    <string name="im_expirienced">I\'m expirienced developer</string>
+    <string name="app_name" translatable="false">Weather</string>
+    <string name="temperature">Temperature</string>
+    <string name="temperature_land">Temperature</string>
+    <string name="city">City</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="theme">White/Dark</string>
 </resources>

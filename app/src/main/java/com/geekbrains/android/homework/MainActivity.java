@@ -1,20 +1,25 @@
 package com.geekbrains.android.homework;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
-import android.content.pm.ConfigurationInfo;
-import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView;
-    private Switch beginnerSwitch;
+    private TextView temperatureTextView;
+    private TextView dataTextView;
+    private TextView timeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,34 +27,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
         setColourOfTextView();
-        setOnSwitchChanged();
+        setDate(dataTextView = findViewById(R.id.dataTextView), "dd.MM.yyyy");
+        setDate(timeTextView = findViewById(R.id.timeTextView), "hh:mm");
     }
 
     private void initViews() {
-        textView = findViewById(R.id.hellotextView);
-        beginnerSwitch = findViewById(R.id.switch1);
+        temperatureTextView = findViewById(R.id.temperatureTextView);
     }
 
     private void setColourOfTextView() {
-        textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        temperatureTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
     }
 
-    private void setOnSwitchChanged() {
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            beginnerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    String text;
-                    if (isChecked) {
-                        text = getString(R.string.i_m_beginner);
-                    } else {
-                        text = getString(R.string.im_expirienced);
+    private void setDate(TextView textView, String format) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(100);
+                        runOnUiThread(() -> {
+                            Date currentData = new Date();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
+                            String data = dateFormat.format(currentData);
+                            textView.setText(data);
+                        });
                     }
-
-                    textView.setText(text);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            });
-        }
+            }
+        };
+        thread.start();
     }
 }
