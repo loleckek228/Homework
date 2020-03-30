@@ -6,4 +6,13 @@
     <string name="time">Time</string>
     <string name="date">Date</string>
     <string name="theme">White/Dark</string>
+    <string name="chooseCity">Choose city</string>
+    <string name="showinfo">showInfo</string>
+    <string-array name="cities">
+        <item>Beijing</item>
+        <item>Delhi</item>
+        <item>Moscow</item>
+        <item>New York</item>
+        <item>Tokyo</item>
+    </string-array>
 </resources>

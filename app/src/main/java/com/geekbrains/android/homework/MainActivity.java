@@ -1,16 +1,9 @@
 package com.geekbrains.android.homework;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
-
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

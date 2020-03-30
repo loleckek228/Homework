@@ -5,4 +5,13 @@
     <string name="time">Время</string>
     <string name="date">Дата</string>
     <string name="theme">Белый/Темный</string>
+    <string name="chooseCity">Выбрать город</string>
+    <string name="showinfo">Показать информацию</string>
+    <string-array name="cities">
+        <item>Пекин</item>
+        <item>Дели</item>
+        <item>Москва</item>
+        <item>Нью-Йорк</item>
+        <item>Токио</item>
+    </string-array>
 </resources>
