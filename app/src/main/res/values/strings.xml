@@ -18,5 +18,6 @@
     <string name="saveState">Save State</string>
     <string name="windSpeed">Wind Speed</string>
     <string name="soundSettings">On/Off sound</string>
+    <string name="notificationSettings">On/Off notification</string>
 
 </resources>
