@@ -36,14 +36,4 @@
         app:layout_constraintTop_toBottomOf="@id/soundSwitch" />
 
 
-
-<!--    <Switch-->
-<!--        android:id="@+id/saveStateView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/saveState"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/themeSwitch" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
