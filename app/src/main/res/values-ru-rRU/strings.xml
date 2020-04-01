@@ -4,7 +4,7 @@
     <string name="city">Город</string>
     <string name="time">Время</string>
     <string name="date">Дата</string>
-    <string name="theme">Белый/Темный</string>
+    <string name="themeSettings">Белая/Темная тема</string>
     <string name="chooseCity">Выбрать город</string>
     <string name="showinfo">Показать информацию</string>
     <string-array name="cities">
@@ -14,4 +14,7 @@
         <item>Нью-Йорк</item>
         <item>Токио</item>
     </string-array>
+    <string name="saveState">Сохранение состояния</string>
+    <string name="windSpeed">Скорость Ветра</string>
+    <string name="soundSettings">Вкл/Выкл звук</string>
 </resources>

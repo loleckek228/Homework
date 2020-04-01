@@ -5,7 +5,7 @@
     <string name="city">City</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
-    <string name="theme">White/Dark</string>
+    <string name="themeSettings">White/Dark theme</string>
     <string name="chooseCity">Choose city</string>
     <string name="showinfo">showInfo</string>
     <string-array name="cities">
@@ -15,4 +15,8 @@
         <item>New York</item>
         <item>Tokyo</item>
     </string-array>
+    <string name="saveState">Save State</string>
+    <string name="windSpeed">Wind Speed</string>
+    <string name="soundSettings">On/Off sound</string>
+
 </resources>
