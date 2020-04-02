@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="@string/enterCity"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@id/temperatureCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
