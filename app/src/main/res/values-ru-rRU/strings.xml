@@ -14,8 +14,9 @@
         <item>Нью-Йорк</item>
         <item>Токио</item>
     </string-array>
-    <string name="saveState">Сохранение состояния</string>
-    <string name="windSpeed">Скорость Ветра</string>
+    <string name="wildSpeed">Скорость Ветра</string>
     <string name="soundSettings">Вкл/Выкл звук</string>
     <string name="notificationSettings">Вкл/Выкл уведомления</string>
+    <string name="enterCity">Введите город...</string>
+    <string name="showInfoAboutCity">Показать информацию о городе</string>
 </resources>

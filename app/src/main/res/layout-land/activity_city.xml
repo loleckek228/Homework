@@ -4,46 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/cityEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="24dp"
-        app:layout_constraintBottom_toTopOf="@id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chooseCity"
-        app:layout_constraintBottom_toTopOf="@id/txt"
-        app:layout_constraintEnd_toStartOf="@id/temperatureCheckBox"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cityEditText" />
-
-    <CheckBox
-        android:id="@+id/temperatureCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/temperature"
-        app:layout_constraintBottom_toTopOf="@id/txt"
-        app:layout_constraintEnd_toStartOf="@id/windSpeedCheckBox"
-        app:layout_constraintStart_toEndOf="@id/button"
-        app:layout_constraintTop_toBottomOf="@id/cityEditText" />
-
-    <CheckBox
-        android:id="@+id/windSpeedCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/windSpeed"
-        app:layout_constraintBottom_toTopOf="@id/txt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/temperatureCheckBox"
-        app:layout_constraintTop_toBottomOf="@id/cityEditText" />
-
     <TextView
         android:id="@+id/txt"
         android:layout_width="wrap_content"
@@ -51,15 +11,65 @@
         app:layout_constraintBottom_toTopOf="@id/listView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/temperatureCheckBox" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="wrap_content"
         android:layout_height="150dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cityEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/cityEditText"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="@string/enterCity"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toTopOf="@id/temperatureCheckBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/listView" />
+
+    <CheckBox
+        android:id="@+id/temperatureCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/temperature"
+        app:layout_constraintEnd_toStartOf="@id/wildSpeedCheckBox"
+        app:layout_constraintStart_toEndOf="@id/setCityButton"
+        app:layout_constraintTop_toTopOf="@id/setCityButton" />
+
+    <CheckBox
+        android:id="@+id/wildSpeedCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wildSpeed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/temperatureCheckBox"
+        app:layout_constraintTop_toTopOf="@id/temperatureCheckBox" />
+
+    <Button
+        android:id="@+id/setCityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chooseCity"
+        app:layout_constraintBottom_toTopOf="@id/showInfoAboutCityButton"
+        app:layout_constraintEnd_toStartOf="@id/temperatureCheckBox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cityEditText" />
+
+    <Button
+        android:id="@+id/showInfoAboutCityButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show info about city"
+        app:layout_constraintTop_toBottomOf="@id/setCityButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

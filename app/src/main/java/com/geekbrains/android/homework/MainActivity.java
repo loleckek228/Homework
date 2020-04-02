@@ -1,10 +1,13 @@
 package com.geekbrains.android.homework;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
@@ -14,14 +17,18 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String temperatureDataKey = "temperatureDataKey";
+    static final String Container_Data_Key = "Container_Data_Key";
     private final String TAG = this.getClass().getSimpleName();
 
     private TextView temperatureTextView;
+    private TextView wildSpeedTextView;
     private TextView dataTextView;
     private TextView timeTextView;
+    private TextView cityTextView;
 
-    private int temperature;
+    private Button startCityActivityButton;
+
+    private int secondActivityRequestCode = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setColourOfTextView();
-        setDate(dataTextView = findViewById(R.id.dataTextView), "dd.MM.yyyy");
-        setDate(timeTextView = findViewById(R.id.timeTextView), "hh:mm");
+        setOnStartCityActivityButtonClick();
+        setDate(dataTextView, "dd.MM.yyyy");
+        setDate(timeTextView, "hh:mm");
+
 
         String instanceState;
         if (savedInstanceState == null) {
@@ -41,16 +50,61 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Toast.makeText(getApplicationContext(), instanceState + " - onCreate()", Toast.LENGTH_SHORT).show();
-         Log.d(TAG, "On create");
+        Log.d(TAG, "On create");
     }
 
     private void initViews() {
         temperatureTextView = findViewById(R.id.temperatureTextView);
+        wildSpeedTextView = findViewById(R.id.wildSpeedTextView);
+        startCityActivityButton = findViewById(R.id.chooseCityButton);
+        cityTextView = findViewById(R.id.cityTextView);
+        dataTextView = findViewById(R.id.dataTextView);
+        timeTextView = findViewById(R.id.timeTextView);
     }
-
 
     private void setColourOfTextView() {
         temperatureTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        wildSpeedTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        dataTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        timeTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        cityTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+    }
+
+    private void setOnStartCityActivityButtonClick() {
+        startCityActivityButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CityActivity.class);
+            startActivityForResult(intent, secondActivityRequestCode);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == secondActivityRequestCode && resultCode == RESULT_OK) {
+
+            String text = null;
+            Boolean isTemperature = false;
+            Boolean isWildSpeed = false;
+
+            if (data != null) {
+                text = data.getStringExtra(CityActivity.CITY_DATA_KEY);
+                isTemperature = data.getBooleanExtra(CityActivity.TEMPERATURE_CHECKBOX_DATA_KEY, false);
+                isWildSpeed = data.getBooleanExtra(CityActivity.WILDSPEED_CHECKBOX_DATA_KEY, false);
+            }
+
+            cityTextView.setText(text);
+
+            Random random = new Random();
+
+            if (isTemperature) {
+                temperatureTextView.setText(random.nextInt(10) + "C");
+            }
+
+            if (isWildSpeed) {
+                wildSpeedTextView.setText(String.valueOf(random.nextInt(5)));
+            }
+        }
     }
 
     private void setDate(TextView textView, String format) {
@@ -88,14 +142,17 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Повторный запуск!! - onRestoreInstanceState()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Повторный запуск!! - onRestoreInstanceState()");
 
-        DataContainer conteiner = (DataContainer) saveInstanceState.getSerializable(temperatureDataKey);
+        DataContainer container = (DataContainer) saveInstanceState.getSerializable(Container_Data_Key);
 
-        temperatureTextView.setText(conteiner.getTemperatureText());
+        cityTextView.setText(container.getCity());
+        temperatureTextView.setText(container.getTemperature());
+        wildSpeedTextView.setText(container.getWildSpeed());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         Toast.makeText(getApplicationContext(), "onResume()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onResume()");
     }
@@ -103,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         Toast.makeText(getApplicationContext(), "onPause()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onPause()");
     }
@@ -112,7 +170,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "onSaveInstanceState()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onSaveInstanceState()");
 
-        saveInstanceState.putSerializable(temperatureDataKey, DataContainer.getInstance(temperature));
+        DataContainer.getInstance().setCity(cityTextView.getText().toString());
+        DataContainer.getInstance().setTemperature(temperatureTextView.getText().toString());
+        DataContainer.getInstance().setWildSpeed(wildSpeedTextView.getText().toString());
+        saveInstanceState.putSerializable(Container_Data_Key, DataContainer.getInstance());
 
         super.onSaveInstanceState(saveInstanceState);
     }
@@ -120,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
         Toast.makeText(getApplicationContext(), "onStop()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onStop()");
     }
@@ -127,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+
         Toast.makeText(getApplicationContext(), "onRestart()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onRestart()");
     }
@@ -134,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         Toast.makeText(getApplicationContext(), "onDestroy()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onDestroy()");
     }

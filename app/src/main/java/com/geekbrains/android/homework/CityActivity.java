@@ -1,22 +1,27 @@
 package com.geekbrains.android.homework;
 
-
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CityActivity extends AppCompatActivity {
 
-    private final String temperatureCheckBoxDataKey = "temperatureCheckBoxDataKey";
-    private final String wildSpeedCheckBoxDataKey = "wildSpeedCheckBoxDataKey";
+    static final String TEMPERATURE_CHECKBOX_DATA_KEY = "temperature_CheckBox_Data_Key";
+    static final String WILDSPEED_CHECKBOX_DATA_KEY = "wild_Speed_CheckBox_Data_Key";
+    static final String CITY_DATA_KEY = "city_second_activity_data_key";
 
     private ListView citiesList;
+    private EditText enterCityEditText;
+    private Button chooseCityButton;
+    private Button showInfoAboutCityButton;
     private CheckBox temperatureCheckBox;
     private CheckBox wildSpeedCheckBox;
 
@@ -24,16 +29,22 @@ public class CityActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
+
         initView();
+        setOnChooseCityButtonClickBehavior();
+        setOnShowInfoAboutCityButtonClick();
     }
 
     private void initView() {
+        initСitiesListView();
+        enterCityEditText = findViewById(R.id.cityEditText);
+        chooseCityButton = findViewById(R.id.setCityButton);
+        showInfoAboutCityButton = findViewById(R.id.showInfoAboutCityButton);
         temperatureCheckBox = findViewById(R.id.temperatureCheckBox);
-        wildSpeedCheckBox = findViewById(R.id.windSpeedCheckBox);
-        initСitiesList();
+        wildSpeedCheckBox = findViewById(R.id.wildSpeedCheckBox);
     }
 
-    private void initСitiesList() {
+    private void initСitiesListView() {
         final TextView textView = findViewById(R.id.txt);
         citiesList = findViewById(R.id.listView);
         ArrayAdapter<CharSequence> adapter
@@ -42,21 +53,28 @@ public class CityActivity extends AppCompatActivity {
         citiesList.setAdapter(adapter);
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle saveInstanceState) {
-        super.onRestoreInstanceState(saveInstanceState);
+    private void setOnChooseCityButtonClickBehavior() {
+        chooseCityButton.setOnClickListener((v -> {
+            Intent intentСontainer = new Intent();
+            String city = enterCityEditText.getText().toString().trim();
+            Boolean isTemperature = temperatureCheckBox.isChecked();
+            Boolean isWildSpeed = wildSpeedCheckBox.isChecked();
 
-        Boolean isTemperature = saveInstanceState.getBoolean(temperatureCheckBoxDataKey, false);
-        Boolean isWilsSpeed = saveInstanceState.getBoolean(wildSpeedCheckBoxDataKey, false);
+            intentСontainer.putExtra(CITY_DATA_KEY, city);
+            intentСontainer.putExtra(TEMPERATURE_CHECKBOX_DATA_KEY, isTemperature);
+            intentСontainer.putExtra(WILDSPEED_CHECKBOX_DATA_KEY, isWildSpeed);
 
-        temperatureCheckBox.setChecked(isTemperature);
-        wildSpeedCheckBox.setChecked(isWilsSpeed);
+            setResult(CityActivity.RESULT_OK, intentСontainer);
+            finish();
+        }));
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle saveInstanceState) {
-        saveInstanceState.putBoolean(temperatureCheckBoxDataKey, temperatureCheckBox.isChecked());
-        saveInstanceState.putBoolean(wildSpeedCheckBoxDataKey, wildSpeedCheckBox.isChecked());
-        super.onSaveInstanceState(saveInstanceState);
+    private void setOnShowInfoAboutCityButtonClick() {
+        showInfoAboutCityButton.setOnClickListener((v -> {
+            String url = "https://ru.wikipedia.org/wiki/" + enterCityEditText.getText().toString();
+            Uri uri = Uri.parse(url);
+            Intent browser = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(browser);
+        }));
     }
 }

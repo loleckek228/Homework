@@ -10,9 +10,11 @@
         android:id="@+id/dataTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/date"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/cityTextView"
+        app:layout_constraintBottom_toTopOf="@id/timeTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,35 +23,61 @@
         android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="@string/time"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/cityTextView"
+        app:layout_constraintBottom_toTopOf="@id/cityTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/dataTextView" />
+        app:layout_constraintTop_toBottomOf="@id/dataTextView" />
 
     <TextView
         android:id="@+id/cityTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="@string/city"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/temperatureTextView"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@id/temperatureTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/timeTextView" />
+        app:layout_constraintTop_toBottomOf="@id/timeTextView" />
+
+    <Button
+        android:id="@+id/chooseCityButton"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="..."
+        android:textColor="#464641"
+        android:textSize="24sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cityTextView"
+        app:layout_constraintTop_toTopOf="@id/cityTextView" />
 
     <TextView
         android:id="@+id/temperatureTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/temperature"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView3"
+        app:layout_constraintBottom_toTopOf="@id/wildSpeedTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cityTextView" />
+        app:layout_constraintTop_toBottomOf="@id/cityTextView" />
 
+    <TextView
+        android:id="@+id/wildSpeedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wildSpeed"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temperatureTextView" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -58,7 +86,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/temperatureTextView"
+        app:layout_constraintTop_toBottomOf="@id/wildSpeedTextView"
         app:srcCompat="@drawable/weather" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
