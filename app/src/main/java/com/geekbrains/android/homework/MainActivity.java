@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == secondActivityRequestCode && resultCode == RESULT_OK) {
 
             String text = null;
+
             Boolean isTemperature = false;
             Boolean isWildSpeed = false;
 
@@ -97,12 +98,15 @@ public class MainActivity extends AppCompatActivity {
 
             Random random = new Random();
 
+            String randomTemperature = random.nextInt(10) + "C";
+            String randomWildSpeed = String.valueOf(random.nextInt(5));
+
             if (isTemperature) {
-                temperatureTextView.setText(random.nextInt(10) + "C");
+                temperatureTextView.setText(randomTemperature);
             }
 
             if (isWildSpeed) {
-                wildSpeedTextView.setText(String.valueOf(random.nextInt(5)));
+                wildSpeedTextView.setText(randomWildSpeed);
             }
         }
     }
@@ -139,14 +143,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle saveInstanceState) {
         super.onRestoreInstanceState(saveInstanceState);
+
         Toast.makeText(getApplicationContext(), "Повторный запуск!! - onRestoreInstanceState()", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Повторный запуск!! - onRestoreInstanceState()");
 
         DataContainer container = (DataContainer) saveInstanceState.getSerializable(Container_Data_Key);
 
-        cityTextView.setText(container.getCity());
-        temperatureTextView.setText(container.getTemperature());
-        wildSpeedTextView.setText(container.getWildSpeed());
+        String city = container.getCity();
+        String temperature = container.getTemperature();
+        String wildSpeed = container.getWildSpeed();
+
+        cityTextView.setText(city);
+        temperatureTextView.setText(temperature);
+        wildSpeedTextView.setText(wildSpeed);
     }
 
     @Override

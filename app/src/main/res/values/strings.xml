@@ -20,4 +20,5 @@
     <string name="notificationSettings">On/Off notification</string>
     <string name="enterCity">Enter city...</string>
     <string name="showInfoAboutCity">Show info about city</string>
+    <string name="points">...</string>
 </resources>

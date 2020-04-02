@@ -45,7 +45,6 @@ public class CityActivity extends AppCompatActivity {
     }
 
     private void initСitiesListView() {
-        final TextView textView = findViewById(R.id.txt);
         citiesList = findViewById(R.id.listView);
         ArrayAdapter<CharSequence> adapter
                 = ArrayAdapter.createFromResource(this, R.array.cities,
@@ -56,7 +55,9 @@ public class CityActivity extends AppCompatActivity {
     private void setOnChooseCityButtonClickBehavior() {
         chooseCityButton.setOnClickListener((v -> {
             Intent intentСontainer = new Intent();
+
             String city = enterCityEditText.getText().toString().trim();
+
             Boolean isTemperature = temperatureCheckBox.isChecked();
             Boolean isWildSpeed = wildSpeedCheckBox.isChecked();
 
@@ -65,6 +66,7 @@ public class CityActivity extends AppCompatActivity {
             intentСontainer.putExtra(WILDSPEED_CHECKBOX_DATA_KEY, isWildSpeed);
 
             setResult(CityActivity.RESULT_OK, intentСontainer);
+
             finish();
         }));
     }
