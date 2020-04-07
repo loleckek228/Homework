@@ -8,17 +8,11 @@
     <string name="themeSettings">White/Dark theme</string>
     <string name="chooseCity">Choose city</string>
     <string name="showinfo">showInfo</string>
-    <string-array name="cities">
-        <item>Beijing</item>
-        <item>Delhi</item>
-        <item>Moscow</item>
-        <item>New York</item>
-        <item>Tokyo</item>
-    </string-array>
     <string name="wildSpeed">Wild Speed</string>
     <string name="soundSettings">On/Off sound</string>
     <string name="notificationSettings">On/Off notification</string>
     <string name="enterCity">Enter city...</string>
     <string name="showInfoAboutCity">Show info about city</string>
     <string name="points">...</string>
+    <string name="empty_list">Empty list</string>
 </resources>

@@ -1,21 +1,20 @@
 package com.geekbrains.android.homework;
 
-import android.widget.TextView;
-
 import java.io.Serializable;
 
-public class DataContainer implements Serializable {
+public class WeatherContainer implements Serializable {
 
-    private static DataContainer instance;
+    private static WeatherContainer instance;
 
     private String city;
     private String temperature;
     private String wildSpeed;
+    private int position = 0;
 
-    private DataContainer() { }
+    private WeatherContainer() { }
 
-    public static DataContainer getInstance() {
-        if (instance == null) instance = new DataContainer();
+    public static WeatherContainer getInstance() {
+        if (instance == null) instance = new WeatherContainer();
 
         return instance;
     }
@@ -32,6 +31,10 @@ public class DataContainer implements Serializable {
         return temperature;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     public void setCity(String city) {
         this.city = city;
     }
@@ -42,5 +45,9 @@ public class DataContainer implements Serializable {
 
     public void setWildSpeed(String wildSpeed) {
         this.wildSpeed = wildSpeed;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }
