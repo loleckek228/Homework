@@ -4,28 +4,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.geekbrains.android.homework.R;
+import com.geekbrains.android.homework.RecyclerWeatherAdapter;
+import com.geekbrains.android.homework.Weather;
 import com.geekbrains.android.homework.WeatherContainer;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 public class WeatherFragment extends Fragment {
-
-    private TextView temperatureTextView;
-    private TextView wildSpeedTextView;
-    private TextView dataTextView;
-    private TextView timeTextView;
+    private RecyclerView temperatureRecyclerView;
+    private TextClock timeTextView;
+    private TextView windSpeedTextView;
     private TextView cityTextView;
+    private String temperatureYesterday;
+    private String temperatureToday;
+    private String temperatureTomorrow;
+    private View view;
 
     static WeatherFragment create(WeatherContainer container) {
         WeatherFragment fragment = new WeatherFragment();
@@ -46,60 +51,64 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-        setColourOfTextView(view);
+        this.view = view;
+        initViews();
         getInfo();
-        setDate();
+        initRecyclerView();
+        setColourOfTextView();
     }
 
-    private void initViews(View view) {
-        temperatureTextView = view.findViewById(R.id.temperatureTextView);
-        wildSpeedTextView = view.findViewById(R.id.wildSpeedTextView);
+    private void initViews() {
+        windSpeedTextView = view.findViewById(R.id.windSpeedTextView);
         cityTextView = view.findViewById(R.id.cityTextView);
-        dataTextView = view.findViewById(R.id.dataTextView);
         timeTextView = view.findViewById(R.id.timeTextClock);
     }
 
-    private void setColourOfTextView(View view) {
-        temperatureTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
-        wildSpeedTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
-        dataTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
+    private void setColourOfTextView() {
+        windSpeedTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
         timeTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
         cityTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
     }
 
+    private void initRecyclerView() {
+        temperatureRecyclerView = view.findViewById(R.id.temperatureRecyclerVIew);
+
+        Weather[] weathers = new Weather[]{new Weather(temperatureYesterday, -1),
+                new Weather(temperatureToday, 0),
+                new Weather(temperatureTomorrow, 1)};
+
+        RecyclerWeatherAdapter adapter = new RecyclerWeatherAdapter(weathers);
+
+        LinearLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+
+        temperatureRecyclerView.setLayoutManager(layoutManager);
+        temperatureRecyclerView.setAdapter(adapter);
+    }
+
     private void getInfo() {
         WeatherContainer container = (WeatherContainer) (Objects.requireNonNull(getArguments())
-        .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
+                .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
 
         String city = container.getCity();
-        String temperature = container.getTemperature();
-        String wildSpeed = container.getWildSpeed();
+        String windSpeed = container.getWindSpeed();
+
+        temperatureYesterday = container.getTemperatureYesterday();
+        temperatureToday = container.getTemperatureToday();
+        temperatureTomorrow = container.getTemperatureTomorrow();
 
         cityTextView.setText(city);
 
-        if (!temperature.equals("")) {
-            temperatureTextView.setText(temperature);
-        }
-
-        if (!wildSpeed.equals("")) {
-            wildSpeedTextView.setText(wildSpeed);
-        }
+        windSpeedTextView.setText(windSpeed);
     }
 
     int getIndex() {
         WeatherContainer container = (WeatherContainer) (Objects.requireNonNull(getArguments())
                 .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
+
         try {
             return container.getPosition();
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    private void setDate() {
-        String date = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
-
-        dataTextView.setText(date);
     }
 }

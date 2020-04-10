@@ -4,10 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.geekbrains.android.homework.fragments.CitiesFragment;
 
 public class MainActivity extends AppCompatActivity {
     @Override

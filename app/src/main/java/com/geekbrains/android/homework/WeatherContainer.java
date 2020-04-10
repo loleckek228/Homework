@@ -7,8 +7,11 @@ public class WeatherContainer implements Serializable {
     private static WeatherContainer instance;
 
     private String city;
-    private String temperature;
-    private String wildSpeed;
+    private String temperatureYesterday;
+    private String temperatureToday;
+    private String temperatureTomorrow;
+    private String windSpeed;
+
     private int position = 0;
 
     private WeatherContainer() { }
@@ -19,16 +22,24 @@ public class WeatherContainer implements Serializable {
         return instance;
     }
 
-    public String getWildSpeed() {
-        return wildSpeed;
-    }
-
     public String getCity() {
         return city;
     }
 
-    public String getTemperature() {
-        return temperature;
+    public String getTemperatureYesterday() {
+        return temperatureYesterday;
+    }
+
+    public String getTemperatureToday() {
+        return temperatureToday;
+    }
+
+    public String getTemperatureTomorrow() {
+        return temperatureTomorrow;
+    }
+
+    public String getWindSpeed() {
+        return windSpeed;
     }
 
     public int getPosition() {
@@ -39,12 +50,20 @@ public class WeatherContainer implements Serializable {
         this.city = city;
     }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
+    public void setTemperatureYesterday(String temperatureYesterday) {
+        this.temperatureYesterday = temperatureYesterday;
     }
 
-    public void setWildSpeed(String wildSpeed) {
-        this.wildSpeed = wildSpeed;
+    public void setTemperatureToday(String temperatureToday) {
+        this.temperatureToday = temperatureToday;
+    }
+
+    public void setTemperatureTomorrow(String temperatureTomorrow) {
+        this.temperatureTomorrow = temperatureTomorrow;
+    }
+
+    public void setWindSpeed(String wildSpeed) {
+        this.windSpeed = wildSpeed;
     }
 
     public void setPosition(int position) {

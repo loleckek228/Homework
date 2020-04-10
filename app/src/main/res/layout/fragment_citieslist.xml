@@ -2,49 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/background_light"
+    android:weightSum="100">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.1"
-        android:orientation="vertical">
+        android:layout_weight="85"
+        android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/cities_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/cities_list_empty_view"
+        <EditText
+            android:id="@+id/enterCityEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:text="@string/empty_list" />
+            android:layout_weight="1"
+            android:hint="@string/enter_city"
+            android:background="@android:color/background_light"
+            android:textCursorDrawable="@color/colorPrimaryDark"/>
+
+        <Button
+            android:id="@+id/addCityButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/search" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_weight="15"
+        android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/temperatureCheckBox"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/citiesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_weight="1"
-            android:text="@string/temperature" />
+            android:text="@string/history_of_search"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"/>
 
-
-        <CheckBox
-            android:id="@+id/wildSpeedCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/wildSpeed" />
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/addedCitiesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

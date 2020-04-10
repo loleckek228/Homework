@@ -2,16 +2,13 @@
     <string name="temperature">Температура</string>
     <string name="temperature_land">Температура</string>
     <string name="city">Город</string>
-    <string name="time">Время</string>
     <string name="date">Дата</string>
     <string name="themeSettings">Белая/Темная тема</string>
-    <string name="chooseCity">Выбрать город</string>
-    <string name="showinfo">Показать информацию</string>
-    <string name="wildSpeed">Скорость Ветра</string>
+    <string name="windSpeed">Скорость Ветра</string>
     <string name="soundSettings">Вкл/Выкл звук</string>
     <string name="notificationSettings">Вкл/Выкл уведомления</string>
-    <string name="enterCity">Введите город...</string>
-    <string name="showInfoAboutCity">Показать информацию о городе</string>
-    <string name="points">...</string>
-    <string name="empty_list">Пустой список</string>
+    <string name="search">Поиск</string>
+    <string name="enter_city">Введите город</string>
+    <string name="history_of_search">История поиска:</string>
+    <string name="meter_per_second">м/с</string>
 </resources>

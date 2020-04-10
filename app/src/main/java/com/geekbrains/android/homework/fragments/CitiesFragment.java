@@ -6,30 +6,38 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.geekbrains.android.homework.R;
+import com.geekbrains.android.homework.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.WeatherActivity;
 import com.geekbrains.android.homework.WeatherContainer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
 public class CitiesFragment extends Fragment {
     static final String WEATHER_DATA_CONTAINER = "weather_data_container";
 
-    private ListView citiesListView;
-    private TextView emptyTextView;
-    private CheckBox temperatureCheckBox;
-    private CheckBox wildSpeedCheckBox;
+    private ArrayList<String> citiesList;
+    private ArrayList<String> addedCitiesList;
+    private RecyclerView citiesRecyclerView;
+    private RecyclerView addedCitiesRecyclerView;
+    private EditText enterCityEditText;
+    private Button addCityButton;
+    private Bundle savedInstanceState;
+    private View view;
 
     private boolean isExistWeather;
     private int currentPosition = 0;
@@ -43,63 +51,101 @@ public class CitiesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-        initList();
+        this.view = view;
+
+        citiesList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.citiesArray)));
+        addedCitiesList = new ArrayList<>();
+
+        initViews();
+        setOnAddCityButtonClickBehavior();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
+
         isExistWeather = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
 
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt("CurrentCity", 0);
+            addedCitiesList = savedInstanceState.getStringArrayList("AddedCities");
         }
 
-        if (isExistWeather) {
-            citiesListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            showWeather();
-        }
+        initAddedCitiesRecyclerView();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("CurrentCity", currentPosition);
+        outState.putStringArrayList("AddedCities", addedCitiesList);
         super.onSaveInstanceState(outState);
     }
 
-    private void initViews(View view) {
-        citiesListView = view.findViewById(R.id.cities_list_view);
-        emptyTextView = view.findViewById(R.id.cities_list_empty_view);
-        temperatureCheckBox = view.findViewById(R.id.temperatureCheckBox);
-        wildSpeedCheckBox = view.findViewById(R.id.wildSpeedCheckBox);
+    private void initViews() {
+        enterCityEditText = view.findViewById(R.id.enterCityEditText);
+        addCityButton = view.findViewById(R.id.addCityButton);
+
+        initCitiesRecyclerView();
     }
 
-    private void initList() {
-        ArrayAdapter adapter =
-                ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()), R.array.cities,
-                        android.R.layout.simple_list_item_activated_1);
-        citiesListView.setAdapter(adapter);
+    private void initCitiesRecyclerView() {
+        citiesRecyclerView = view.findViewById(R.id.citiesRecyclerView);
 
-        citiesListView.setEmptyView(emptyTextView);
+        RecyclerCitiesAdapter citiesAdapter = new RecyclerCitiesAdapter(citiesList, this);
 
-        citiesListView.setOnItemClickListener(((parent, view, position, id) -> {
-            currentPosition = position;
-            showWeather();
-        }));
+        LinearLayoutManager layoutManger = new LinearLayoutManager(getContext());
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.separator)));
+
+        citiesRecyclerView.addItemDecoration(itemDecoration);
+        citiesRecyclerView.setLayoutManager(layoutManger);
+        citiesRecyclerView.setAdapter(citiesAdapter);
     }
 
-    private void showWeather() {
+    private void initAddedCitiesRecyclerView() {
+        addedCitiesRecyclerView = view.findViewById(R.id.addedCitiesRecyclerView);
+
+        RecyclerCitiesAdapter addedCitiesAdapter = new RecyclerCitiesAdapter(addedCitiesList, this);
+
+        LinearLayoutManager addedCitiesLayoutManger = new LinearLayoutManager(getContext());
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.separator)));
+
+        addedCitiesRecyclerView.addItemDecoration(itemDecoration);
+        addedCitiesRecyclerView.setLayoutManager(addedCitiesLayoutManger);
+        addedCitiesRecyclerView.setAdapter(addedCitiesAdapter);
+    }
+
+    private void setOnAddCityButtonClickBehavior() {
+        addCityButton.setOnClickListener((view) -> {
+            String city = enterCityEditText.getText().toString();
+
+            if (!checkCity(city)) {
+                addedCitiesList.add(city);
+            }
+
+            onActivityCreated(savedInstanceState);
+        });
+    }
+
+    private boolean checkCity(String city) {
+        return addedCitiesList.contains(city) || citiesList.contains(city);
+    }
+
+    public void showWeather(ArrayList<String> citiesList, int position) {
+        currentPosition = position;
+
         if (isExistWeather) {
-            citiesListView.setItemChecked(currentPosition, true);
-
             WeatherFragment detail = (WeatherFragment)
                     Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.weather);
 
             if (detail == null || detail.getIndex() != currentPosition) {
 
-                detail = WeatherFragment.create(getWeatherContainer());
+                detail = WeatherFragment.create(getWeatherContainer(citiesList));
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.weather, detail);
@@ -107,40 +153,33 @@ public class CitiesFragment extends Fragment {
                 fragmentTransaction.addToBackStack("Some_key");
                 fragmentTransaction.commit();
             }
-        }
-        else {
+        } else {
             Intent intentContainer = new Intent();
             intentContainer.setClass(Objects.requireNonNull(getActivity()), WeatherActivity.class);
 
-            intentContainer.putExtra(WEATHER_DATA_CONTAINER, getWeatherContainer());
+            intentContainer.putExtra(WEATHER_DATA_CONTAINER, getWeatherContainer(citiesList));
 
             startActivity(intentContainer);
         }
     }
 
-    private WeatherContainer getWeatherContainer() {
-        String[] cities = getResources().getStringArray(R.array.cities);
-
-        String city = cities[currentPosition];
-        String temperature = "";
-        String wildSpeed = "";
-
-        Boolean isTemperature = temperatureCheckBox.isChecked();
-        Boolean isWildSpeed = wildSpeedCheckBox.isChecked();
+    private WeatherContainer getWeatherContainer(ArrayList<String> citiesList) {
+        ArrayList<String> cities = citiesList;
 
         Random random = new Random();
 
-        if (isTemperature) {
-            temperature = random.nextInt(10) + "C";
-        }
+        String city = cities.get(currentPosition);
 
-        if (isWildSpeed) {
-            wildSpeed = String.valueOf(random.nextInt(5));
-        }
+        String temperatureYesterday = random.nextInt(10) + "C";
+        String temperatureToday = random.nextInt(10) + "C";
+        String temperatureTomorrow = random.nextInt(10) + "C";
+        String windSpeed = String.valueOf(random.nextInt(5));
 
         WeatherContainer.getInstance().setCity(city);
-        WeatherContainer.getInstance().setTemperature(temperature);
-        WeatherContainer.getInstance().setWildSpeed(wildSpeed);
+        WeatherContainer.getInstance().setTemperatureYesterday(temperatureYesterday);
+        WeatherContainer.getInstance().setTemperatureToday(temperatureToday);
+        WeatherContainer.getInstance().setTemperatureTomorrow(temperatureTomorrow);
+        WeatherContainer.getInstance().setWindSpeed(windSpeed);
         WeatherContainer.getInstance().setPosition(currentPosition);
 
         return WeatherContainer.getInstance();
