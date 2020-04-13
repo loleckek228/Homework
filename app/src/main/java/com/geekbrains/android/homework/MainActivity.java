@@ -1,6 +1,8 @@
 package com.geekbrains.android.homework;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -10,6 +12,7 @@ import com.geekbrains.android.homework.fragments.DeveloperFragment;
 import com.geekbrains.android.homework.fragments.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -70,5 +73,18 @@ public class MainActivity extends AppCompatActivity {
         if (countOfFragmentInManger > 0) {
             getSupportFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = new Intent(this, DeveloperActivity.class);
+        startActivity(intent);
+        return true;
     }
 }
