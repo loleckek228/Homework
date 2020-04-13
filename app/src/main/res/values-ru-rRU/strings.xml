@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Погода</string>
     <string name="temperature">Температура</string>
     <string name="temperature_land">Температура</string>
     <string name="city">Город</string>
@@ -8,7 +9,13 @@
     <string name="soundSettings">Вкл/Выкл звук</string>
     <string name="notificationSettings">Вкл/Выкл уведомления</string>
     <string name="search">Поиск</string>
-    <string name="enter_city">Введите город</string>
+    <string name="input_city">Введите город</string>
     <string name="history_of_search">История поиска:</string>
     <string name="meter_per_second">м/с</string>
+    <string name="city_founded">Город найден!</string>
+    <string name="developer">Разработчик</string>
+    <string name="title_cities">Города</string>
+    <string name="title_developer">Разработчик</string>
+    <string name="title_settings">Настройки</string>
+    <string name="developer_name">Я есть Георгий!</string>
 </resources>

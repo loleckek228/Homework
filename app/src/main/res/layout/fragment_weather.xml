@@ -12,7 +12,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.1"
             android:format12Hour="hh:mm"
-            android:textSize="28sp" />
+            style="@style/textSize" />
 
         <TextView
             android:id="@+id/cityTextView"
@@ -21,7 +21,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.2"
             android:text="@string/city"
-            android:textSize="32sp" />
+            style="@style/textSize"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/temperatureRecyclerVIew"
@@ -43,14 +43,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="@string/windSpeed"
-                android:textSize="36sp" />
+                style="@style/textSize" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/meter_per_second"
-                android:textSize="36sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                style="@style/textSize"/>
         </LinearLayout>
 
         <ImageView

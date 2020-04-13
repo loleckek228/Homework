@@ -1,13 +1,14 @@
 package com.geekbrains.android.homework.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +22,15 @@ import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.WeatherActivity;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class CitiesFragment extends Fragment {
     static final String WEATHER_DATA_CONTAINER = "weather_data_container";
@@ -34,11 +39,14 @@ public class CitiesFragment extends Fragment {
     private ArrayList<String> addedCitiesList;
     private RecyclerView citiesRecyclerView;
     private RecyclerView addedCitiesRecyclerView;
-    private EditText enterCityEditText;
-    private Button addCityButton;
+    private TextInputEditText inputCityEditText;
+    private MaterialButton addCityButton;
     private Bundle savedInstanceState;
     private View view;
 
+    private Pattern checkInputCity = Pattern.compile("^[а-яА-Я]+(?:[\\s-][а-яА-Я]+)*$");
+
+    private boolean isInputCityCorrect;
     private boolean isExistWeather;
     private int currentPosition = 0;
 
@@ -57,6 +65,7 @@ public class CitiesFragment extends Fragment {
         addedCitiesList = new ArrayList<>();
 
         initViews();
+        checkInputCityField();
         setOnAddCityButtonClickBehavior();
     }
 
@@ -71,6 +80,7 @@ public class CitiesFragment extends Fragment {
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt("CurrentCity", 0);
             addedCitiesList = savedInstanceState.getStringArrayList("AddedCities");
+            isInputCityCorrect = savedInstanceState.getBoolean("CorrectCity", false);
         }
 
         initAddedCitiesRecyclerView();
@@ -80,11 +90,22 @@ public class CitiesFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("CurrentCity", currentPosition);
         outState.putStringArrayList("AddedCities", addedCitiesList);
+        outState.putBoolean("CorrectCity", isInputCityCorrect);
         super.onSaveInstanceState(outState);
     }
 
+    private void checkInputCityField() {
+        inputCityEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) return;
+
+            TextView textView = (TextView) v;
+
+            validate(textView, checkInputCity, "Введите город!");
+        });
+    }
+
     private void initViews() {
-        enterCityEditText = view.findViewById(R.id.enterCityEditText);
+        inputCityEditText = view.findViewById(R.id.inputCityEditText);
         addCityButton = view.findViewById(R.id.addCityButton);
 
         initCitiesRecyclerView();
@@ -120,16 +141,46 @@ public class CitiesFragment extends Fragment {
         addedCitiesRecyclerView.setAdapter(addedCitiesAdapter);
     }
 
+    private void validate(TextView textView, Pattern check, String message) {
+        String value = textView.getText().toString();
+
+        if (check.matcher(value).matches()) {
+            hideError(textView);
+            isInputCityCorrect = true;
+        } else {
+            showError(textView, message);
+            isInputCityCorrect = false;
+        }
+    }
+
+    private void showError(TextView textView, String message) {
+        textView.setError(message);
+    }
+
+    private void hideError(TextView textView) {
+        textView.setError(null);
+    }
+
     private void setOnAddCityButtonClickBehavior() {
         addCityButton.setOnClickListener((view) -> {
-            String city = enterCityEditText.getText().toString();
+            String city = inputCityEditText.getText().toString();
 
-            if (!checkCity(city)) {
+            if (!checkCity(city) && isInputCityCorrect) {
                 addedCitiesList.add(city);
+                isInputCityCorrect = false;
+                onActivityCreated(savedInstanceState);
+                Snackbar.make(view, R.string.city_founded, Snackbar.LENGTH_SHORT).show();
+                inputCityEditText.setText(null);
+                addCityButton.clearFocus();
+                closeKeyboard();
             }
-
-            onActivityCreated(savedInstanceState);
         });
+    }
+
+    private void closeKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private boolean checkCity(String city) {

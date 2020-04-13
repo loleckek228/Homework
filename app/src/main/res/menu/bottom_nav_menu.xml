@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_cities"
+        android:icon="@drawable/ic_city"
+        android:title="@string/title_cities" />
+
+    <item
+        android:id="@+id/navigation_developer"
+        android:icon="@drawable/ic_developer"
+        android:title="@string/title_developer" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_setting"
+        android:title="@string/title_settings" />
+
+</menu>

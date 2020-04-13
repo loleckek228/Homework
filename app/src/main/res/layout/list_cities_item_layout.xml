@@ -6,6 +6,7 @@
         android:id="@+id/cityListItemTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="26sp"/>
+        android:textSize="26sp"
+        style="@style/textColor"/>
 
 </FrameLayout>

@@ -40,7 +40,6 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         setText(holder, position);
-        setColourOfTextView(holder);
         setOnItemClickBehavior(holder, position);
         highLightSelectedPosition(holder, position);
     }
@@ -63,12 +62,6 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
         });
     }
 
-    private void setColourOfTextView(@NonNull ViewHolder holder) {
-        int textColor = ContextCompat.getColor(context, android.R.color.holo_green_dark);
-
-        holder.cityTextView.setTextColor(textColor);
-    }
-
     private void highLightSelectedPosition(@NonNull ViewHolder holder, int position) {
         if (position == selectedPosition) {
             int backgroundColor = ContextCompat.getColor(context, android.R.color.holo_green_dark);
@@ -81,7 +74,10 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
 
             holder.cityTextView.setBackgroundColor(color);
 
-            setColourOfTextView(holder);
+            int textColor = ContextCompat.getColor(context, R.color.colorAccent);
+
+            holder.cityTextView.setTextColor(textColor);
+
         }
     }
 

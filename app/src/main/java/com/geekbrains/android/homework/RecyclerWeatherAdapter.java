@@ -32,7 +32,6 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         setText(holder, position);
-        setColorOfTextView(holder);
     }
 
     @Override
@@ -43,11 +42,6 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
     private void setText(@NonNull ViewHolder holder, int position) {
         holder.dataListItemTextView.setText(weathers[position].getDate());
         holder.temperatureListItemTextView.setText(weathers[position].getTemperature());
-    }
-
-    private void setColorOfTextView(@NonNull ViewHolder holder) {
-        holder.dataListItemTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        holder.temperatureListItemTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
