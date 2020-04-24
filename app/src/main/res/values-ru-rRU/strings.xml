@@ -18,4 +18,6 @@
     <string name="title_developer">Разработчик</string>
     <string name="title_settings">Настройки</string>
     <string name="developer_name">Я есть Георгий!</string>
+    <string name="weather_description">WeatherDescription</string>
+    <string name="error_city_not_found">Ошибка!\nГород не найден!</string>
 </resources>

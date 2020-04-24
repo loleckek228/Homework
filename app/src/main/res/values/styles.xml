@@ -10,12 +10,4 @@
 
 
     <style name="AppDarkTheme" parent="Theme.MaterialComponents"/>
-
-    <style name="textSize" >
-        <item name="android:textSize">36sp</item>
-    </style>
-
-    <style name="textColor" >
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
 </resources>

@@ -9,17 +9,14 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:textSize="24sp"
-       android:layout_marginEnd="20dp"
-       android:layout_marginRight="20dp"
-       style="@style/textColor"/>
+       android:textColor="@color/colorAccent"
+       android:layout_marginStart="10dp" />
 
     <TextView
         android:id="@+id/temperatureListItemTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="26sp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        style="@style/textColor"/>
+        android:textColor="@color/colorAccent"/>
 
 </LinearLayout>

@@ -1,18 +1,15 @@
 package com.geekbrains.android.homework;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeatherAdapter.ViewHolder> {
     private Weather[] weathers;
-    private Context context;
 
     public RecyclerWeatherAdapter(Weather[] weathers) {
         this.weathers = weathers;
@@ -21,8 +18,6 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.lilst_temperature_item_layout, parent, false);
 

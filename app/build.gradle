@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.geekbrains.android.homework"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -35,6 +35,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.squareup:otto:1.3.8'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

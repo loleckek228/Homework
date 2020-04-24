@@ -1,5 +1,13 @@
 package com.geekbrains.android.homework.fragments;
 
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextClock;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -8,17 +16,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextClock;
-import android.widget.TextView;
-
 import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerWeatherAdapter;
 import com.geekbrains.android.homework.Weather;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.geekbrains.android.homework.fragments.cities.CitiesFragment;
 
 import java.util.Objects;
 
@@ -27,12 +29,14 @@ public class WeatherFragment extends Fragment {
     private TextClock timeTextView;
     private TextView windSpeedTextView;
     private TextView cityTextView;
-    private String temperatureYesterday;
-    private String temperatureToday;
-    private String temperatureTomorrow;
+    private TextView weatherIconTextView;
+    private TextView weatherDescriptionTextView;
+    private Typeface weatherFont;
     private View view;
 
-    static WeatherFragment create(WeatherContainer container) {
+    private int index = 0;
+
+    public static WeatherFragment create(WeatherContainer container) {
         WeatherFragment fragment = new WeatherFragment();
 
         Bundle args = new Bundle();
@@ -53,6 +57,7 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
         initViews();
+        initFonts();
         getInfo();
         initRecyclerView();
         setColourOfTextView();
@@ -62,24 +67,33 @@ public class WeatherFragment extends Fragment {
         windSpeedTextView = view.findViewById(R.id.windSpeedTextView);
         cityTextView = view.findViewById(R.id.cityTextView);
         timeTextView = view.findViewById(R.id.timeTextClock);
+        weatherDescriptionTextView = view.findViewById(R.id.weatherDescriptionTextView);
+        weatherIconTextView = view.findViewById(R.id.weatherIconTextView);
+    }
+
+    private void initFonts() {
+        weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
+        weatherIconTextView.setTypeface(weatherFont);
     }
 
     private void setColourOfTextView() {
-        windSpeedTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
         timeTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
         cityTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorPrimary));
+        weatherDescriptionTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorAccent));
+        windSpeedTextView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.colorAccent));
     }
 
     private void initRecyclerView() {
         temperatureRecyclerView = view.findViewById(R.id.temperatureRecyclerVIew);
 
-        Weather[] weathers = new Weather[]{new Weather(temperatureYesterday, -1),
-                new Weather(temperatureToday, 0),
-                new Weather(temperatureTomorrow, 1)};
+        String temperature = WeatherContainer.getInstance().getTemperatureToday();
+        String date = WeatherContainer.getInstance().getDate();
 
-        RecyclerWeatherAdapter adapter = new RecyclerWeatherAdapter(weathers);
+        Weather weather = new Weather(temperature, date);
 
-        LinearLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        RecyclerWeatherAdapter adapter = new RecyclerWeatherAdapter(new Weather[]{weather});
+
+        LinearLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
 
         temperatureRecyclerView.setLayoutManager(layoutManager);
         temperatureRecyclerView.setAdapter(adapter);
@@ -91,22 +105,21 @@ public class WeatherFragment extends Fragment {
 
         String city = container.getCity();
         String windSpeed = container.getWindSpeed();
-
-        temperatureYesterday = container.getTemperatureYesterday();
-        temperatureToday = container.getTemperatureToday();
-        temperatureTomorrow = container.getTemperatureTomorrow();
+        String weatherDescription = container.getDescription();
+        String weatherIcon = container.getIcon();
 
         cityTextView.setText(city);
-
         windSpeedTextView.setText(windSpeed);
+        weatherDescriptionTextView.setText(weatherDescription);
+        weatherIconTextView.setText(weatherIcon);
     }
 
-    int getIndex() {
+    public int getIndex() {
         WeatherContainer container = (WeatherContainer) (Objects.requireNonNull(getArguments())
                 .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
-
+        index = container.getPosition();
         try {
-            return container.getPosition();
+            return index;
         } catch (Exception e) {
             return 0;
         }

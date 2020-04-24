@@ -1,9 +1,10 @@
-package com.geekbrains.android.homework.fragments;
+package com.geekbrains.android.homework.fragments.cities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +25,7 @@ import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.WeatherActivity;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.geekbrains.android.homework.fragments.WeatherFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,19 +33,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 public class CitiesFragment extends Fragment {
-    static final String WEATHER_DATA_CONTAINER = "weather_data_container";
+    public static final String WEATHER_DATA_CONTAINER = "weather_data_container";
 
+    private СitiesViewModel citiesViewModel;
     private ArrayList<String> citiesList;
     private ArrayList<String> addedCitiesList;
-    private RecyclerView citiesRecyclerView;
-    private RecyclerView addedCitiesRecyclerView;
     private TextInputEditText inputCityEditText;
     private MaterialButton addCityButton;
-    private Bundle savedInstanceState;
     private View view;
 
     private Pattern checkInputCity = Pattern.compile("^[а-яА-Я]+(?:[\\s-][а-яА-Я]+)*$");
@@ -53,7 +54,14 @@ public class CitiesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_citieslist, container, false);
+        citiesViewModel =
+                new ViewModelProvider(getActivity()).get(СitiesViewModel.class);
+
+        View root = inflater.inflate(R.layout.fragment_citieslist, container, false);
+
+        citiesViewModel.getCities().observe(getViewLifecycleOwner(), cities -> initAddedCitiesRecyclerView(cities));
+
+        return root;
     }
 
     @Override
@@ -61,35 +69,42 @@ public class CitiesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
 
-        citiesList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.citiesArray)));
-        addedCitiesList = new ArrayList<>();
+        if (citiesList == null) {
+            citiesList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.citiesArray)));
+        }
+
+        if (addedCitiesList == null) {
+            addedCitiesList = new ArrayList<>();
+        }
+
+        isExistWeather = checkOrientation();
 
         initViews();
         checkInputCityField();
         setOnAddCityButtonClickBehavior();
+        initCitiesRecyclerView();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
 
-        isExistWeather = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
+        isExistWeather = checkOrientation();
 
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt("CurrentCity", 0);
-            addedCitiesList = savedInstanceState.getStringArrayList("AddedCities");
             isInputCityCorrect = savedInstanceState.getBoolean("CorrectCity", false);
+
         }
 
-        initAddedCitiesRecyclerView();
+        if (isExistWeather) {
+            showWeather(currentPosition);
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("CurrentCity", currentPosition);
-        outState.putStringArrayList("AddedCities", addedCitiesList);
         outState.putBoolean("CorrectCity", isInputCityCorrect);
         super.onSaveInstanceState(outState);
     }
@@ -104,17 +119,16 @@ public class CitiesFragment extends Fragment {
         });
     }
 
+
     private void initViews() {
         inputCityEditText = view.findViewById(R.id.inputCityEditText);
         addCityButton = view.findViewById(R.id.addCityButton);
-
-        initCitiesRecyclerView();
     }
 
     private void initCitiesRecyclerView() {
-        citiesRecyclerView = view.findViewById(R.id.citiesRecyclerView);
+        RecyclerView citiesRecyclerView = view.findViewById(R.id.citiesRecyclerView);
 
-        RecyclerCitiesAdapter citiesAdapter = new RecyclerCitiesAdapter(citiesList, this);
+        RecyclerCitiesAdapter citiesAdapter = new RecyclerCitiesAdapter(citiesList, this, isExistWeather);
 
         LinearLayoutManager layoutManger = new LinearLayoutManager(getContext());
 
@@ -126,10 +140,12 @@ public class CitiesFragment extends Fragment {
         citiesRecyclerView.setAdapter(citiesAdapter);
     }
 
-    private void initAddedCitiesRecyclerView() {
-        addedCitiesRecyclerView = view.findViewById(R.id.addedCitiesRecyclerView);
+    private void initAddedCitiesRecyclerView(ArrayList<String> cities) {
+        RecyclerView addedCitiesRecyclerView = view.findViewById(R.id.addedCitiesRecyclerView);
 
-        RecyclerCitiesAdapter addedCitiesAdapter = new RecyclerCitiesAdapter(addedCitiesList, this);
+        addedCitiesList = cities;
+
+        RecyclerCitiesAdapter addedCitiesAdapter = new RecyclerCitiesAdapter(addedCitiesList, this, false);
 
         LinearLayoutManager addedCitiesLayoutManger = new LinearLayoutManager(getContext());
 
@@ -163,17 +179,19 @@ public class CitiesFragment extends Fragment {
 
     private void setOnAddCityButtonClickBehavior() {
         addCityButton.setOnClickListener((view) -> {
+            inputCityEditText.setInputType(InputType.TYPE_CLASS_TEXT);
             String city = inputCityEditText.getText().toString();
 
             if (!checkCity(city) && isInputCityCorrect) {
                 addedCitiesList.add(city);
                 isInputCityCorrect = false;
-                onActivityCreated(savedInstanceState);
+                citiesViewModel.setCities(addedCitiesList);
                 Snackbar.make(view, R.string.city_founded, Snackbar.LENGTH_SHORT).show();
                 inputCityEditText.setText(null);
                 addCityButton.clearFocus();
                 closeKeyboard();
             }
+
         });
     }
 
@@ -187,18 +205,24 @@ public class CitiesFragment extends Fragment {
         return addedCitiesList.contains(city) || citiesList.contains(city);
     }
 
-    public void showWeather(ArrayList<String> citiesList, int position) {
+    private boolean checkOrientation() {
+        return getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    public void showWeather(int position) {
         currentPosition = position;
 
         if (isExistWeather) {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             WeatherFragment detail = (WeatherFragment)
-                    Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.weather);
+                    Objects.requireNonNull(fragmentManager).findFragmentById(R.id.weather);
 
             if (detail == null || detail.getIndex() != currentPosition) {
 
-                detail = WeatherFragment.create(getWeatherContainer(citiesList));
+                detail = WeatherFragment.create(WeatherContainer.getInstance());
 
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.weather, detail);
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 fragmentTransaction.addToBackStack("Some_key");
@@ -208,31 +232,9 @@ public class CitiesFragment extends Fragment {
             Intent intentContainer = new Intent();
             intentContainer.setClass(Objects.requireNonNull(getActivity()), WeatherActivity.class);
 
-            intentContainer.putExtra(WEATHER_DATA_CONTAINER, getWeatherContainer(citiesList));
+            intentContainer.putExtra(WEATHER_DATA_CONTAINER, WeatherContainer.getInstance());
 
             startActivity(intentContainer);
         }
-    }
-
-    private WeatherContainer getWeatherContainer(ArrayList<String> citiesList) {
-        ArrayList<String> cities = citiesList;
-
-        Random random = new Random();
-
-        String city = cities.get(currentPosition);
-
-        String temperatureYesterday = random.nextInt(10) + "C";
-        String temperatureToday = random.nextInt(10) + "C";
-        String temperatureTomorrow = random.nextInt(10) + "C";
-        String windSpeed = String.valueOf(random.nextInt(5));
-
-        WeatherContainer.getInstance().setCity(city);
-        WeatherContainer.getInstance().setTemperatureYesterday(temperatureYesterday);
-        WeatherContainer.getInstance().setTemperatureToday(temperatureToday);
-        WeatherContainer.getInstance().setTemperatureTomorrow(temperatureTomorrow);
-        WeatherContainer.getInstance().setWindSpeed(windSpeed);
-        WeatherContainer.getInstance().setPosition(currentPosition);
-
-        return WeatherContainer.getInstance();
     }
 }

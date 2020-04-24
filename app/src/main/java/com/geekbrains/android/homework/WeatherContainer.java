@@ -7,14 +7,31 @@ public class WeatherContainer implements Serializable {
     private static WeatherContainer instance;
 
     private String city;
-    private String temperatureYesterday;
     private String temperatureToday;
-    private String temperatureTomorrow;
     private String windSpeed;
+    private String description;
+    private String date;
+    private String icon;
+    private int position = -1;
 
-    private int position = 0;
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-    private WeatherContainer() { }
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    private WeatherContainer() {
+    }
 
     public static WeatherContainer getInstance() {
         if (instance == null) instance = new WeatherContainer();
@@ -26,16 +43,8 @@ public class WeatherContainer implements Serializable {
         return city;
     }
 
-    public String getTemperatureYesterday() {
-        return temperatureYesterday;
-    }
-
     public String getTemperatureToday() {
         return temperatureToday;
-    }
-
-    public String getTemperatureTomorrow() {
-        return temperatureTomorrow;
     }
 
     public String getWindSpeed() {
@@ -50,16 +59,8 @@ public class WeatherContainer implements Serializable {
         this.city = city;
     }
 
-    public void setTemperatureYesterday(String temperatureYesterday) {
-        this.temperatureYesterday = temperatureYesterday;
-    }
-
     public void setTemperatureToday(String temperatureToday) {
         this.temperatureToday = temperatureToday;
-    }
-
-    public void setTemperatureTomorrow(String temperatureTomorrow) {
-        this.temperatureTomorrow = temperatureTomorrow;
     }
 
     public void setWindSpeed(String wildSpeed) {
@@ -68,5 +69,13 @@ public class WeatherContainer implements Serializable {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
     }
 }

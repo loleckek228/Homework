@@ -4,11 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/developerTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="center_horizontal"
         android:text="@string/developer_name"
-        style="@style/textSize"/>
+        android:textSize="36sp"
+        android:textColor="@color/colorPrimary"/>
 
 </FrameLayout>

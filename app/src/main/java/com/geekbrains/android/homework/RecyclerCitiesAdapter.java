@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.geekbrains.android.homework.fragments.CitiesFragment;
+import com.geekbrains.android.homework.fragments.cities.CitiesFragment;
 
 import java.util.ArrayList;
 
@@ -20,10 +20,12 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
     private Context context;
 
     private int selectedPosition = -1;
+    private boolean isHorizontal;
 
-    public RecyclerCitiesAdapter(ArrayList<String> citiesList, CitiesFragment citiesFragment) {
+    public RecyclerCitiesAdapter(ArrayList<String> citiesList, CitiesFragment citiesFragment, boolean isHorizontal) {
         this.citiesList = citiesList;
         this.citiesFragment = citiesFragment;
+        this.isHorizontal = isHorizontal;
     }
 
     @NonNull
@@ -39,6 +41,9 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (isHorizontal && selectedPosition == -1) {
+            initCity();
+        }
         setText(holder, position);
         setOnItemClickBehavior(holder, position);
         highLightSelectedPosition(holder, position);
@@ -49,6 +54,11 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
         return citiesList == null ? 0 : citiesList.size();
     }
 
+    private void initCity() {
+        String city = citiesList.get(0);
+        WeatherDataLoader.getInstance().updateWeatherData(city, citiesFragment, 0);
+    }
+
     private void setText(@NonNull ViewHolder holder, int position) {
         holder.cityTextView.setText(citiesList.get(position));
     }
@@ -56,7 +66,9 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
     private void setOnItemClickBehavior(@NonNull ViewHolder holder, int position) {
         holder.cityTextView.setOnClickListener((view) -> {
             selectedPosition = position;
-            citiesFragment.showWeather(citiesList, position);
+
+            String city =  holder.cityTextView.getText().toString();
+            WeatherDataLoader.getInstance().updateWeatherData(city, citiesFragment, position);
 
             notifyDataSetChanged();
         });
@@ -71,13 +83,10 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
             holder.cityTextView.setBackgroundColor(backgroundColor);
         } else {
             int color = ContextCompat.getColor(context, android.R.color.transparent);
-
-            holder.cityTextView.setBackgroundColor(color);
-
             int textColor = ContextCompat.getColor(context, R.color.colorAccent);
 
+            holder.cityTextView.setBackgroundColor(color);
             holder.cityTextView.setTextColor(textColor);
-
         }
     }
 
