@@ -1,4 +1,4 @@
-package com.geekbrains.android.homework.fragments.cities;
+package com.geekbrains.android.homework.fragments.searchCities;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 
-public class СitiesViewModel extends ViewModel {
+public class SearchCityViewModel extends ViewModel {
+
     private MutableLiveData<ArrayList<String>> cities;
 
     public void setCities(ArrayList<String> cities) {
@@ -20,5 +21,4 @@ public class СitiesViewModel extends ViewModel {
 
         return cities;
     }
-
 }

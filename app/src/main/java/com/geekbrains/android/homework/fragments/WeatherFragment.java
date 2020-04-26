@@ -20,9 +20,6 @@ import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerWeatherAdapter;
 import com.geekbrains.android.homework.Weather;
 import com.geekbrains.android.homework.WeatherContainer;
-import com.geekbrains.android.homework.fragments.cities.CitiesFragment;
-
-import java.util.Objects;
 
 public class WeatherFragment extends Fragment {
     private RecyclerView temperatureRecyclerView;
@@ -34,14 +31,8 @@ public class WeatherFragment extends Fragment {
     private Typeface weatherFont;
     private View view;
 
-    private int index = 0;
-
-    public static WeatherFragment create(WeatherContainer container) {
+    public static WeatherFragment create() {
         WeatherFragment fragment = new WeatherFragment();
-
-        Bundle args = new Bundle();
-        args.putSerializable(CitiesFragment.WEATHER_DATA_CONTAINER, container);
-        fragment.setArguments(args);
 
         return fragment;
     }
@@ -100,28 +91,14 @@ public class WeatherFragment extends Fragment {
     }
 
     private void getInfo() {
-        WeatherContainer container = (WeatherContainer) (Objects.requireNonNull(getArguments())
-                .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
-
-        String city = container.getCity();
-        String windSpeed = container.getWindSpeed();
-        String weatherDescription = container.getDescription();
-        String weatherIcon = container.getIcon();
+        String city = WeatherContainer.getInstance().getCity();
+        String windSpeed = WeatherContainer.getInstance().getWindSpeed();
+        String weatherDescription = WeatherContainer.getInstance().getDescription();
+        String weatherIcon = WeatherContainer.getInstance().getIcon();
 
         cityTextView.setText(city);
         windSpeedTextView.setText(windSpeed);
         weatherDescriptionTextView.setText(weatherDescription);
         weatherIconTextView.setText(weatherIcon);
-    }
-
-    public int getIndex() {
-        WeatherContainer container = (WeatherContainer) (Objects.requireNonNull(getArguments())
-                .getSerializable(CitiesFragment.WEATHER_DATA_CONTAINER));
-        index = container.getPosition();
-        try {
-            return index;
-        } catch (Exception e) {
-            return 0;
-        }
     }
 }

@@ -12,7 +12,6 @@ public class WeatherContainer implements Serializable {
     private String description;
     private String date;
     private String icon;
-    private int position = -1;
 
     public void setIcon(String icon) {
         this.icon = icon;
@@ -51,10 +50,6 @@ public class WeatherContainer implements Serializable {
         return windSpeed;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
     public void setCity(String city) {
         this.city = city;
     }
@@ -65,10 +60,6 @@ public class WeatherContainer implements Serializable {
 
     public void setWindSpeed(String wildSpeed) {
         this.windSpeed = wildSpeed;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     public void setDate(String date) {

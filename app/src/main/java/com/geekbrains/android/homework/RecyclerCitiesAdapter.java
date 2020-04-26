@@ -8,23 +8,22 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.geekbrains.android.homework.fragments.cities.CitiesFragment;
 
 import java.util.ArrayList;
 
 public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAdapter.ViewHolder> {
     private ArrayList<String> citiesList;
-    private CitiesFragment citiesFragment;
+    private Fragment fragment;
     private Context context;
 
     private int selectedPosition = -1;
     private boolean isHorizontal;
 
-    public RecyclerCitiesAdapter(ArrayList<String> citiesList, CitiesFragment citiesFragment, boolean isHorizontal) {
+    public RecyclerCitiesAdapter(ArrayList<String> citiesList, Fragment fragment, boolean isHorizontal) {
         this.citiesList = citiesList;
-        this.citiesFragment = citiesFragment;
+        this.fragment = fragment;
         this.isHorizontal = isHorizontal;
     }
 
@@ -41,7 +40,7 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (isHorizontal && selectedPosition == -1) {
+        if (isHorizontal && WeatherContainer.getInstance().getCity() == null) {
             initCity();
         }
         setText(holder, position);
@@ -56,7 +55,7 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
 
     private void initCity() {
         String city = citiesList.get(0);
-        WeatherDataLoader.getInstance().updateWeatherData(city, citiesFragment, 0);
+        WeatherDataLoader.getInstance().updateWeatherData(city, fragment);
     }
 
     private void setText(@NonNull ViewHolder holder, int position) {
@@ -68,7 +67,7 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
             selectedPosition = position;
 
             String city =  holder.cityTextView.getText().toString();
-            WeatherDataLoader.getInstance().updateWeatherData(city, citiesFragment, position);
+            WeatherDataLoader.getInstance().updateWeatherData(city, fragment);
 
             notifyDataSetChanged();
         });

@@ -6,57 +6,9 @@
     android:orientation="vertical"
     android:weightSum="100">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:orientation="horizontal"
-        android:weightSum="100">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/enterCity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="90"
-            app:errorEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputCityEditText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                android:hint="@string/input_city"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addCityButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="10"
-            android:background="#FFFFFF"
-            android:gravity="center"
-            android:text="@string/search" />
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/citiesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="40" />
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_weight="15"
-        android:text="@string/history_of_search"
-        android:textSize="24sp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/addedCitiesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="40" />
 </LinearLayout>

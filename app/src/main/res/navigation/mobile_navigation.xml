@@ -7,20 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_cities"
-        android:name="com.geekbrains.android.homework.fragments.cities.CitiesFragment"
+        android:name="com.geekbrains.android.homework.fragments.CitiesFragment"
         android:label="@string/title_cities"
-        tools:layout="@layout/fragment_citieslist">
-    </fragment>
+        tools:layout="@layout/fragment_citieslist" />
+
+    <fragment
+        android:id="@+id/navigation_search_city"
+        android:name="com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment"
+        android:label="@string/title_search_city" />
 
     <fragment
         android:id="@+id/navigation_developer"
         android:name="com.geekbrains.android.homework.fragments.developer.DeveloperFragment"
         android:label="@string/title_developer"
-        tools:layout="@layout/fragment_developer"/>
+        tools:layout="@layout/fragment_developer" />
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.geekbrains.android.homework.fragments.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings"/>
+        tools:layout="@layout/fragment_settings" />
+
 </navigation>

@@ -7,18 +7,20 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    private final FragmentManager fm = getSupportFragmentManager();
-
-    private BottomNavigationView navView;
+    private AppBarConfiguration appBarConfiguration;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +29,23 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_cities, R.id.navigation_developer, R.id.navigation_settings)
+        appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_cities, R.id.navigation_search_city, R.id.navigation_developer, R.id.navigation_settings)
+                .setDrawerLayout(drawer)
                 .build();
-
-
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupWithNavController(navigationView, navController);
     }
 
     private void initViews() {
-        navView = findViewById(R.id.nav_view);
-    }
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        int countOfFragmentInManger = fm.getBackStackEntryCount();
-
-        if (countOfFragmentInManger > 0) {
-            fm.popBackStack();
-        }
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -61,8 +56,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent = new Intent(this, DeveloperActivity.class);
-        startActivity(intent);
-        return true;
+        handleMenuItemClick(item);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    private void handleMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menu_developer) {
+            Intent intent = new Intent(this, DeveloperActivity.class);
+            startActivity(intent);
+        }
     }
 }

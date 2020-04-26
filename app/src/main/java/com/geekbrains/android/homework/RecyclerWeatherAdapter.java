@@ -45,6 +45,7 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             initView(itemView);
         }
 

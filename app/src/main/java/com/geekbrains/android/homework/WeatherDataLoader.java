@@ -3,7 +3,10 @@ package com.geekbrains.android.homework;
 import android.content.Intent;
 import android.os.Handler;
 
-import com.geekbrains.android.homework.fragments.cities.CitiesFragment;
+import androidx.fragment.app.Fragment;
+
+import com.geekbrains.android.homework.fragments.CitiesFragment;
+import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +24,8 @@ public class WeatherDataLoader {
 
     private static WeatherDataLoader instance;
 
-    private WeatherDataLoader() {}
+    private WeatherDataLoader() {
+    }
 
     public static WeatherDataLoader getInstance() {
         if (instance == null) {
@@ -36,26 +40,25 @@ public class WeatherDataLoader {
             "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric";
     private static final String KEY = "x-api-key";
     private static final String TAG = "WEATHER";
-    private static final  Handler handler = new Handler();
-    private CitiesFragment citiesFragment;
+    private static final Handler handler = new Handler();
 
-    private int position;
+    private Fragment fragment;
+    private String city;
 
-    public void updateWeatherData(final String city, CitiesFragment citiesFragment, int position) {
-        this.citiesFragment = citiesFragment;
-        this.position = position;
+    public void updateWeatherData(final String city, Fragment fragment) {
+        this.fragment = fragment;
+        this.city = city;
         new Thread() {
             @Override
             public void run() {
                 final JSONObject jsonObject = getJSONData(city);
-                if(jsonObject == null) {
+                if (jsonObject == null) {
                     handler.post(() -> {
-                        Intent intent = new Intent(Objects.requireNonNull(citiesFragment.getContext()), ErrorActivity.class);
-                        citiesFragment.startActivity(intent);
+                        Intent intent = new Intent(Objects.requireNonNull(fragment.getContext()), ErrorActivity.class);
+                        fragment.startActivity(intent);
 
                     });
                 } else {
-                    WeatherContainer.getInstance().setCity(city);
                     handler.post(() -> renderWeather(jsonObject));
                 }
             }
@@ -80,7 +83,7 @@ public class WeatherDataLoader {
             reader.close();
 
             JSONObject jsonObject = new JSONObject(rawData.toString());
-            if(jsonObject.getInt("cod") != 200) {
+            if (jsonObject.getInt("cod") != 200) {
                 return null;
             } else {
                 return jsonObject;
@@ -104,7 +107,15 @@ public class WeatherDataLoader {
             setWeatherIcon(details.getInt("id"),
                     jsonObject.getJSONObject("sys").getLong("sunrise") * 1000,
                     jsonObject.getJSONObject("sys").getLong("sunset") * 1000);
-            citiesFragment.showWeather(position);
+
+            if (fragment instanceof CitiesFragment) {
+                CitiesFragment fragment = (CitiesFragment) this.fragment;
+                fragment.showWeather(city);
+            }
+            else if (fragment instanceof SearchCityFragment) {
+                SearchCityFragment fragment = (SearchCityFragment) this.fragment;
+                fragment.showWeather(city);
+            }
         } catch (Exception exc) {
             exc.printStackTrace();
         }
@@ -114,7 +125,6 @@ public class WeatherDataLoader {
         String detailsText = details.getString("description").toUpperCase();
 
         WeatherContainer.getInstance().setDescription(detailsText);
-
     }
 
     private void setCurrentTemp(JSONObject main) throws JSONException {
@@ -140,9 +150,9 @@ public class WeatherDataLoader {
         int id = actualId / 100;
         String icon = "";
 
-        if(actualId == 800) {
+        if (actualId == 800) {
             long currentTime = new Date().getTime();
-            if(currentTime >= sunrise && currentTime < sunset) {
+            if (currentTime >= sunrise && currentTime < sunset) {
                 icon = "\u2600";
             } else {
                 icon = "\uf02e";
