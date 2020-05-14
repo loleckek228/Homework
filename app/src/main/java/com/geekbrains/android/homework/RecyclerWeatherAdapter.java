@@ -37,9 +37,18 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
     private void setText(@NonNull ViewHolder holder, int position) {
         holder.dataListItemTextView.setText(weathers[position].getDate());
         holder.temperatureListItemTextView.setText(weathers[position].getTemperature());
+
+        if (weathers[position].getTemperature() != null) {
+            String[] tempSplit = weathers[position].getTemperature().split(",");
+
+            float temp = (float) Double.parseDouble(tempSplit[0]);
+
+            holder.thermometerView.setCurrentTemp(temp);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        ThermometerView thermometerView;
         TextView dataListItemTextView;
         TextView temperatureListItemTextView;
 
@@ -50,8 +59,10 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
         }
 
         private void initView(View itemView) {
+            thermometerView = itemView.findViewById(R.id.thermometerView);
             dataListItemTextView = itemView.findViewById(R.id.dataListItemTextView);
             temperatureListItemTextView = itemView.findViewById(R.id.temperatureListItemTextView);
+
         }
     }
 }

@@ -1,11 +1,11 @@
 package com.geekbrains.android.homework;
 
-import android.content.Intent;
 import android.os.Handler;
 
 import androidx.fragment.app.Fragment;
 
 import com.geekbrains.android.homework.fragments.CitiesFragment;
+import com.geekbrains.android.homework.fragments.DialogBuilderFragment;
 import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
 
 import org.json.JSONException;
@@ -18,7 +18,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 public class WeatherDataLoader {
 
@@ -39,9 +38,9 @@ public class WeatherDataLoader {
     private static final String OPEN_WEATHER_API_URL =
             "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric";
     private static final String KEY = "x-api-key";
-    private static final String TAG = "WEATHER";
     private static final Handler handler = new Handler();
 
+    private DialogBuilderFragment dialogBuilderFragment;
     private Fragment fragment;
     private String city;
 
@@ -54,9 +53,8 @@ public class WeatherDataLoader {
                 final JSONObject jsonObject = getJSONData(city);
                 if (jsonObject == null) {
                     handler.post(() -> {
-                        Intent intent = new Intent(Objects.requireNonNull(fragment.getContext()), ErrorActivity.class);
-                        fragment.startActivity(intent);
-
+                        dialogBuilderFragment = new DialogBuilderFragment(city);
+                        dialogBuilderFragment.show(fragment.getActivity().getSupportFragmentManager(), "dialogBuilder");
                     });
                 } else {
                     handler.post(() -> renderWeather(jsonObject));

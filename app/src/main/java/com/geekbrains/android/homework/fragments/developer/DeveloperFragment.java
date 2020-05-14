@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.geekbrains.android.homework.R;
 
 public class DeveloperFragment extends Fragment {
-
     private DeveloperViewModel developerViewModel;
 
     @Nullable

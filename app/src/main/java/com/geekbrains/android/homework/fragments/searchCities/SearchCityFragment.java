@@ -9,12 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,24 +19,23 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.geekbrains.android.homework.OnDialogListener;
 import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.WeatherActivity;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.geekbrains.android.homework.fragments.SearchBottomSheerDialogFragment;
 import com.geekbrains.android.homework.fragments.WeatherFragment;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class SearchCityFragment extends Fragment {
-    private Pattern checkInputCity = Pattern.compile("^[а-яА-Я]+(?:[\\s-][а-яА-Я]+)*$");
+    private SearchBottomSheerDialogFragment dialogFragment;
     private RecyclerCitiesAdapter adapter = null;
     private SearchCityViewModel searchCityViewModel;
-    private TextInputEditText inputCityEditText;
     private ArrayList<String> citiesList;
     private ArrayList<String> searchCitiesList;
     private RecyclerView recyclerView;
@@ -69,8 +65,6 @@ public class SearchCityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
 
-        inputCityEditText = Objects.requireNonNull(getActivity()).findViewById(R.id.inputCityEditText);
-
         citiesList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.citiesArray)));
 
         if (searchCitiesList == null) {
@@ -78,8 +72,6 @@ public class SearchCityFragment extends Fragment {
         }
 
         isExistWeather = checkOrientation();
-
-        checkInputCityField();
     }
 
     @Override
@@ -121,13 +113,9 @@ public class SearchCityFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.menu_search) {
-            if (inputCityEditText.getVisibility() == View.VISIBLE) {
-                inputCityEditText.setVisibility(View.GONE);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.title_search_city);
-            } else {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
-                inputCityEditText.setVisibility(View.VISIBLE);
-            }
+                dialogFragment = new SearchBottomSheerDialogFragment().newInstance();
+                dialogFragment.setOnDialogListener(dialogListener);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), "dialog_fragment");
         }
     }
 
@@ -140,45 +128,26 @@ public class SearchCityFragment extends Fragment {
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private void checkInputCityField() {
-        inputCityEditText.setOnEditorActionListener((textView, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                validate(textView, checkInputCity, "Введите город!");
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void validate(TextView tv, Pattern check, String message) {
-        String city = tv.getText().toString();
-        if (check.matcher(city).matches()) {
-            hideError(tv);
-            addCity(tv.getRootView(), city);
-        } else {
-            showError(tv, message);
-        }
-    }
-
-    private void showError(TextView view, String message) {
-        view.setError(message);
-    }
-
-    private void hideError(TextView view) {
-        view.setError(null);
-    }
-
-    private void addCity(View view, String city) {
+    private void addCity(String city) {
         if (!checkCity(city)) {
             searchCitiesList.add(city);
             searchCityViewModel.setCities(searchCitiesList);
 
             Snackbar.make(view, R.string.city_founded, Snackbar.LENGTH_SHORT).show();
-
-            inputCityEditText.setText(null);
-            inputCityEditText.setVisibility(View.GONE);
         }
     }
+
+    private OnDialogListener dialogListener = new OnDialogListener() {
+        @Override
+        public void onDialogSearch(String city) {
+            addCity(city);
+        }
+
+        @Override
+        public void onDialogBack() {
+
+        }
+    };
 
     public void showWeather(String city) {
         if (isExistWeather) {
