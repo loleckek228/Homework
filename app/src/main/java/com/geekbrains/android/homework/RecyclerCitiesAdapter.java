@@ -1,6 +1,7 @@
 package com.geekbrains.android.homework;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,13 @@ import java.util.ArrayList;
 
 public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAdapter.ViewHolder> {
     private ArrayList<String> citiesList;
-    private Fragment fragment;
     private Context context;
 
     private int selectedPosition = -1;
     private boolean isHorizontal;
 
-    public RecyclerCitiesAdapter(ArrayList<String> citiesList, Fragment fragment, boolean isHorizontal) {
+    public RecyclerCitiesAdapter(ArrayList<String> citiesList, boolean isHorizontal) {
         this.citiesList = citiesList;
-        this.fragment = fragment;
         this.isHorizontal = isHorizontal;
     }
 
@@ -55,7 +54,7 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
 
     private void initCity() {
         String city = citiesList.get(0);
-        WeatherDataLoader.getInstance().updateWeatherData(city, fragment);
+        RetrievesWeatherData.getInstance().updateWeatherData(city);
     }
 
     private void setText(@NonNull ViewHolder holder, int position) {
@@ -66,8 +65,13 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
         holder.cityTextView.setOnClickListener((view) -> {
             selectedPosition = position;
 
+            Fragment fragment = CurrentFragment.getInstance().getFragment();
+
             String city =  holder.cityTextView.getText().toString();
-            WeatherDataLoader.getInstance().updateWeatherData(city, fragment);
+
+            Intent RetrievesWeatherServiceIntent = new Intent(fragment.getActivity(), RetrievesWeatherService.class);
+            RetrievesWeatherServiceIntent.putExtra("City", city);
+            fragment.getActivity().startService(RetrievesWeatherServiceIntent);
 
             notifyDataSetChanged();
         });

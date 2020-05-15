@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.geekbrains.android.homework.CurrentFragment;
 import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.WeatherActivity;
@@ -65,7 +66,9 @@ public class CitiesFragment extends Fragment {
     private void initCitiesRecyclerView() {
         RecyclerView citiesRecyclerView = view.findViewById(R.id.citiesRecyclerView);
 
-        RecyclerCitiesAdapter citiesAdapter = new RecyclerCitiesAdapter(citiesList, this, isExistWeather);
+        CurrentFragment.getInstance().setFragment(this);
+
+        RecyclerCitiesAdapter citiesAdapter = new RecyclerCitiesAdapter(citiesList, isExistWeather);
 
         LinearLayoutManager layoutManger = new LinearLayoutManager(getContext());
 
@@ -83,7 +86,6 @@ public class CitiesFragment extends Fragment {
     }
 
     public void showWeather(String city) {
-
         if (isExistWeather) {
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             WeatherFragment detail = (WeatherFragment)

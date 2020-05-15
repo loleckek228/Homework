@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.geekbrains.android.homework.CurrentFragment;
 import com.geekbrains.android.homework.OnDialogListener;
 import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerCitiesAdapter;
@@ -100,7 +101,8 @@ public class SearchCityFragment extends Fragment {
 
     private void initList(ArrayList<String> cities) {
         searchCitiesList = cities;
-        adapter = new RecyclerCitiesAdapter(searchCitiesList, this, isExistWeather);
+        CurrentFragment.getInstance().setFragment(this);
+        adapter = new RecyclerCitiesAdapter(searchCitiesList, isExistWeather);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 

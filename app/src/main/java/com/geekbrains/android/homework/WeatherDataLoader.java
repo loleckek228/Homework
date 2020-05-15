@@ -1,20 +1,13 @@
 package com.geekbrains.android.homework;
 
-import android.os.Handler;
-
 import androidx.fragment.app.Fragment;
 
 import com.geekbrains.android.homework.fragments.CitiesFragment;
-import com.geekbrains.android.homework.fragments.DialogBuilderFragment;
 import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,66 +27,10 @@ public class WeatherDataLoader {
         return instance;
     }
 
-    private static final String OPEN_WEATHER_API_KEY = "14bd5b8ec394bc4aabe8a6968999edab";
-    private static final String OPEN_WEATHER_API_URL =
-            "https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric";
-    private static final String KEY = "x-api-key";
-    private static final Handler handler = new Handler();
-
-    private DialogBuilderFragment dialogBuilderFragment;
-    private Fragment fragment;
-    private String city;
-
-    public void updateWeatherData(final String city, Fragment fragment) {
-        this.fragment = fragment;
-        this.city = city;
-        new Thread() {
-            @Override
-            public void run() {
-                final JSONObject jsonObject = getJSONData(city);
-                if (jsonObject == null) {
-                    handler.post(() -> {
-                        dialogBuilderFragment = new DialogBuilderFragment(city);
-                        dialogBuilderFragment.show(fragment.getActivity().getSupportFragmentManager(), "dialogBuilder");
-                    });
-                } else {
-                    handler.post(() -> renderWeather(jsonObject));
-                }
-            }
-        }.start();
-    }
-
-    private JSONObject getJSONData(String city) {
+    public void renderWeather(JSONObject jsonObject, String city) {
         try {
-            URL url = new URL(String.format(OPEN_WEATHER_API_URL, city));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.addRequestProperty(KEY, OPEN_WEATHER_API_KEY);
-            connection.setReadTimeout(5000);
+            Fragment fragment = CurrentFragment.getInstance().getFragment();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder rawData = new StringBuilder(1024);
-            String tempVariable;
-
-            while ((tempVariable = reader.readLine()) != null) {
-                rawData.append(tempVariable).append("\n");
-            }
-
-            reader.close();
-
-            JSONObject jsonObject = new JSONObject(rawData.toString());
-            if (jsonObject.getInt("cod") != 200) {
-                return null;
-            } else {
-                return jsonObject;
-            }
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            return null;
-        }
-    }
-
-    private void renderWeather(JSONObject jsonObject) {
-        try {
             JSONObject details = jsonObject.getJSONArray("weather").getJSONObject(0);
             JSONObject main = jsonObject.getJSONObject("main");
             JSONObject windSpeed = jsonObject.getJSONObject("wind");
@@ -107,12 +44,12 @@ public class WeatherDataLoader {
                     jsonObject.getJSONObject("sys").getLong("sunset") * 1000);
 
             if (fragment instanceof CitiesFragment) {
-                CitiesFragment fragment = (CitiesFragment) this.fragment;
-                fragment.showWeather(city);
+                CitiesFragment citiesFragment = (CitiesFragment) fragment;
+                citiesFragment.showWeather(city);
             }
             else if (fragment instanceof SearchCityFragment) {
-                SearchCityFragment fragment = (SearchCityFragment) this.fragment;
-                fragment.showWeather(city);
+                SearchCityFragment searchCityFragment = (SearchCityFragment) fragment;
+                searchCityFragment.showWeather(city);
             }
         } catch (Exception exc) {
             exc.printStackTrace();

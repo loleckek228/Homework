@@ -62,7 +62,6 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
             thermometerView = itemView.findViewById(R.id.thermometerView);
             dataListItemTextView = itemView.findViewById(R.id.dataListItemTextView);
             temperatureListItemTextView = itemView.findViewById(R.id.temperatureListItemTextView);
-
         }
     }
 }
