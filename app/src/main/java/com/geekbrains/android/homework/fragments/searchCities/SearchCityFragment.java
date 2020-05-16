@@ -54,7 +54,9 @@ public class SearchCityFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         searchCityViewModel = new ViewModelProvider(getActivity()).get(SearchCityViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_search_city, container, false);
+
         searchCityViewModel.getCities().observe(getViewLifecycleOwner(), cities -> {
             initList(cities);
         });

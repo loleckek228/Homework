@@ -23,4 +23,5 @@
     <string name="error">Ошибка!</string>
     <string name="not_found">не найден!</string>
     <string name="search_city">Поиск города</string>
+    <string name="network_problem">Проблемы с сетью!</string>
 </resources>

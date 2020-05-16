@@ -24,20 +24,38 @@ public class DialogBuilderFragment extends DialogFragment {
         this.city = city;
     }
 
+    public DialogBuilderFragment() {
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        String error = getResources().getString(R.string.error);
-        String city = getResources().getString(R.string.city);
+        if (city != null) {
+            String error = getResources().getString(R.string.error);
+            String city = getResources().getString(R.string.city);
 
-        String notFound = getResources().getString(R.string.not_found);
+            String notFound = getResources().getString(R.string.not_found);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                    .setTitle(error)
+                    .setNegativeButton("Назад", ((dialog, i) -> {
+                        dismiss();
+                    }))
+                    .setMessage(city + ": \"" + this.city + "\" " + notFound);
+
+            return builder.create();
+        }
+
+        String error = getResources().getString(R.string.error);
+
+        String networkProblem = getResources().getString(R.string.network_problem);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(error)
                 .setNegativeButton("Назад", ((dialog, i) -> {
                     dismiss();
                 }))
-                .setMessage(city + ": \"" + this.city + "\" " + notFound);
+                .setMessage(networkProblem);
 
         return builder.create();
     }

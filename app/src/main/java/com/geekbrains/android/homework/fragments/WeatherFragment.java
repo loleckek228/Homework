@@ -2,9 +2,12 @@ package com.geekbrains.android.homework.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
@@ -20,6 +23,7 @@ import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.RecyclerWeatherAdapter;
 import com.geekbrains.android.homework.Weather;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.squareup.picasso.Picasso;
 
 public class WeatherFragment extends Fragment {
     private RecyclerView temperatureRecyclerView;
@@ -48,6 +52,7 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
 
+        registerForContextMenu(view);
         initViews();
         initFonts();
         getInfo();
@@ -78,10 +83,11 @@ public class WeatherFragment extends Fragment {
     private void initRecyclerView() {
         temperatureRecyclerView = view.findViewById(R.id.temperatureRecyclerVIew);
 
-        String temperature = WeatherContainer.getInstance().getTemperatureToday();
+        String temperature = WeatherContainer.getInstance().getTemperature();
+        float temp = WeatherContainer.getInstance().getTemp();
         String date = WeatherContainer.getInstance().getDate();
 
-        Weather weather = new Weather(temperature, date);
+        Weather weather = new Weather(temperature, temp, date);
 
         RecyclerWeatherAdapter adapter = new RecyclerWeatherAdapter(new Weather[]{weather});
 
@@ -102,4 +108,25 @@ public class WeatherFragment extends Fragment {
         weatherDescriptionTextView.setText(weatherDescription);
         weatherIconTextView.setText(weatherIcon);
     }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+
+        getActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
+    }
+
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        loadImageWithPicasso();
+        return super.onContextItemSelected(item);
+    }
+
+    private void loadImageWithPicasso() {
+        ImageView image = view.findViewById(R.id.image);
+        Picasso.get()
+                .load("https://images.unsplash.com/photo-1469829638725-69bf13ad6801?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60")
+                .into(image);
+    }
+
 }

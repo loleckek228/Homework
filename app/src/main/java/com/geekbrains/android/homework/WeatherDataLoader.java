@@ -4,9 +4,7 @@ import androidx.fragment.app.Fragment;
 
 import com.geekbrains.android.homework.fragments.CitiesFragment;
 import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.geekbrains.android.homework.rest.entities.WeatherRequestRestModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,56 +25,49 @@ public class WeatherDataLoader {
         return instance;
     }
 
-    public void renderWeather(JSONObject jsonObject, String city) {
-        try {
-            Fragment fragment = CurrentFragment.getInstance().getFragment();
+    public void renderWeather(WeatherRequestRestModel model, String city) {
+        Fragment fragment = CurrentFragment.getInstance().getFragment();
 
-            JSONObject details = jsonObject.getJSONArray("weather").getJSONObject(0);
-            JSONObject main = jsonObject.getJSONObject("main");
-            JSONObject windSpeed = jsonObject.getJSONObject("wind");
+        setDetails(model.weather[0].description);
+        setCurrentTemp(model.main.temp);
+        setUpdatedText(model.dt);
+        setWindSpeed(model.wind.speed);
+        setWeatherIcon(model.weather[0].id,
+                model.sys.sunrise * 1000,
+                model.sys.sunset * 1000);
 
-            setDetails(details);
-            setCurrentTemp(main);
-            setUpdatedText(jsonObject);
-            setWindSpeed(windSpeed);
-            setWeatherIcon(details.getInt("id"),
-                    jsonObject.getJSONObject("sys").getLong("sunrise") * 1000,
-                    jsonObject.getJSONObject("sys").getLong("sunset") * 1000);
-
-            if (fragment instanceof CitiesFragment) {
-                CitiesFragment citiesFragment = (CitiesFragment) fragment;
-                citiesFragment.showWeather(city);
-            }
-            else if (fragment instanceof SearchCityFragment) {
-                SearchCityFragment searchCityFragment = (SearchCityFragment) fragment;
-                searchCityFragment.showWeather(city);
-            }
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        if (fragment instanceof CitiesFragment) {
+            CitiesFragment citiesFragment = (CitiesFragment) fragment;
+            citiesFragment.showWeather(city);
+        } else if (fragment instanceof SearchCityFragment) {
+            SearchCityFragment searchCityFragment = (SearchCityFragment) fragment;
+            searchCityFragment.showWeather(city);
         }
     }
 
-    private void setDetails(JSONObject details) throws JSONException {
-        String detailsText = details.getString("description").toUpperCase();
+    private void setDetails(String description) {
+        String detailsText = description.toUpperCase();
 
         WeatherContainer.getInstance().setDescription(detailsText);
     }
 
-    private void setCurrentTemp(JSONObject main) throws JSONException {
+    private void setCurrentTemp(float temp) {
         String currentTextText = String.format(Locale.getDefault(), "%.2f",
-                main.getDouble("temp")) + "\u2103";
+                temp) + "\u2103";
 
-        WeatherContainer.getInstance().setTemperatureToday(currentTextText);
+        WeatherContainer.getInstance().setTemperature(currentTextText);
+        WeatherContainer.getInstance().setTemp(temp);
     }
 
-    private void setUpdatedText(JSONObject jsonObject) throws JSONException {
-        String updateOn = new SimpleDateFormat("dd/MM").format(new Date(jsonObject.getLong("dt") * 1000));
+    private void setUpdatedText(long dt) {
+        String updateOn = new SimpleDateFormat("dd/MM").format(new Date(dt * 1000));
+
         WeatherContainer.getInstance().setDate(updateOn);
     }
 
-    private void setWindSpeed(JSONObject jsonObject) throws JSONException {
-        String windSpeed = String.format(Locale.getDefault(), "%d",
-                jsonObject.getInt("speed"));
+    private void setWindSpeed(float speed) {
+        String windSpeed = String.format(Locale.getDefault(), "%.2f",
+                speed);
 
         WeatherContainer.getInstance().setWindSpeed(windSpeed);
     }

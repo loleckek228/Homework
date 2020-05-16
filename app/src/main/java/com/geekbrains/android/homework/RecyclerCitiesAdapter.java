@@ -1,7 +1,6 @@
 package com.geekbrains.android.homework;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -65,13 +63,9 @@ public class RecyclerCitiesAdapter extends RecyclerView.Adapter<RecyclerCitiesAd
         holder.cityTextView.setOnClickListener((view) -> {
             selectedPosition = position;
 
-            Fragment fragment = CurrentFragment.getInstance().getFragment();
-
             String city =  holder.cityTextView.getText().toString();
 
-            Intent RetrievesWeatherServiceIntent = new Intent(fragment.getActivity(), RetrievesWeatherService.class);
-            RetrievesWeatherServiceIntent.putExtra("City", city);
-            fragment.getActivity().startService(RetrievesWeatherServiceIntent);
+            RetrievesWeatherData.getInstance().updateWeatherData(city);
 
             notifyDataSetChanged();
         });

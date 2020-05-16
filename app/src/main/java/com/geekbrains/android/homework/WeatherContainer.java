@@ -7,7 +7,8 @@ public class WeatherContainer implements Serializable {
     private static WeatherContainer instance;
 
     private String city;
-    private String temperatureToday;
+    private String temperature;
+    private float temp;
     private String windSpeed;
     private String description;
     private String date;
@@ -42,8 +43,8 @@ public class WeatherContainer implements Serializable {
         return city;
     }
 
-    public String getTemperatureToday() {
-        return temperatureToday;
+    public String getTemperature() {
+        return temperature;
     }
 
     public String getWindSpeed() {
@@ -54,8 +55,8 @@ public class WeatherContainer implements Serializable {
         this.city = city;
     }
 
-    public void setTemperatureToday(String temperatureToday) {
-        this.temperatureToday = temperatureToday;
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
     }
 
     public void setWindSpeed(String wildSpeed) {
@@ -68,5 +69,13 @@ public class WeatherContainer implements Serializable {
 
     public String getDate() {
         return date;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
     }
 }
