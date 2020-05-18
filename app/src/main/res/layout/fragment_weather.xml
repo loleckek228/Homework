@@ -71,6 +71,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/icon"
         android:textSize="80sp" />
 
     <ImageView

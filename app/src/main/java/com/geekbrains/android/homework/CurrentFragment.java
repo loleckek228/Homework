@@ -1,6 +1,6 @@
 package com.geekbrains.android.homework;
 
-import androidx.fragment.app.Fragment;
+import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
 
 public class CurrentFragment {
     private static CurrentFragment instance;
@@ -16,13 +16,13 @@ public class CurrentFragment {
         return instance;
     }
 
-    private Fragment fragment;
+    private SearchCityFragment fragment;
 
-    public void setFragment(Fragment fragment) {
+    public void setFragment(SearchCityFragment fragment) {
         this.fragment = fragment;
     }
 
-    public Fragment getFragment() {
+    public SearchCityFragment getFragment() {
         return fragment;
     }
 }

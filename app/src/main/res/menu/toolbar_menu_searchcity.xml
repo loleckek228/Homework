@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_sort"
+        android:title="sort"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/menu_sort_by_city"
+                android:title="City" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/menu_clear_history"
+        android:icon="@drawable/ic_clear"
+        android:title="@string/title_clear_history"
+        app:showAsAction="ifRoom" />
+
+</menu>

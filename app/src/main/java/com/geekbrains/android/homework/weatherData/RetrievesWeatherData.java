@@ -1,8 +1,9 @@
-package com.geekbrains.android.homework;
+package com.geekbrains.android.homework.weatherData;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.geekbrains.android.homework.CurrentFragment;
 import com.geekbrains.android.homework.fragments.DialogBuilderFragment;
 import com.geekbrains.android.homework.rest.OpenWeatherRepo;
 import com.geekbrains.android.homework.rest.entities.WeatherRequestRestModel;
@@ -31,7 +32,9 @@ public class RetrievesWeatherData {
 
     private DialogBuilderFragment dialogBuilderFragment;
 
-    public void updateWeatherData(final String city) {
+    public void updateWeatherData(final String city, boolean isListItem) {
+        Fragment fragment = CurrentFragment.getInstance().getFragment();
+
         OpenWeatherRepo.getSingleton().getAPI().loadWeather(city,
                 OPEN_WEATHER_API_KEY, UNITS)
                 .enqueue(new Callback<WeatherRequestRestModel>() {
@@ -39,11 +42,13 @@ public class RetrievesWeatherData {
                     public void onResponse(@NonNull Call<WeatherRequestRestModel> call,
                                            @NonNull Response<WeatherRequestRestModel> response) {
                         if (response.body() != null && response.isSuccessful()) {
-                            WeatherDataLoader.getInstance().renderWeather(response.body(), city);
+                            if (isListItem) {
+                                WeatherDataLoader.getInstance().renderWeather(response.body());
+                            } else {
+                                WeatherDataLoader.getInstance().saveCityWeather(response.body());
+                            }
                         } else {
                             if (response.code() == 404) {
-                                Fragment fragment = CurrentFragment.getInstance().getFragment();
-
                                 dialogBuilderFragment = new DialogBuilderFragment(city);
                                 dialogBuilderFragment.show(fragment.getActivity().getSupportFragmentManager(), "dialogBuilder");
                             }
@@ -52,8 +57,6 @@ public class RetrievesWeatherData {
 
                     @Override
                     public void onFailure(Call<WeatherRequestRestModel> call, Throwable t) {
-                        Fragment fragment = CurrentFragment.getInstance().getFragment();
-
                         dialogBuilderFragment = new DialogBuilderFragment();
                         dialogBuilderFragment.show(fragment.getActivity().getSupportFragmentManager(), "dialogBuilder");
                     }

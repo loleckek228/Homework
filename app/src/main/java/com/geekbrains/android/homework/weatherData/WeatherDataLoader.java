@@ -1,9 +1,12 @@
-package com.geekbrains.android.homework;
+package com.geekbrains.android.homework.weatherData;
 
-import androidx.fragment.app.Fragment;
-
-import com.geekbrains.android.homework.fragments.CitiesFragment;
+import com.geekbrains.android.homework.CurrentFragment;
+import com.geekbrains.android.homework.EventBus;
+import com.geekbrains.android.homework.WeatherContainer;
+import com.geekbrains.android.homework.events.AddedCityEvent;
 import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
+import com.geekbrains.android.homework.model.City;
+import com.geekbrains.android.homework.model.Info;
 import com.geekbrains.android.homework.rest.entities.WeatherRequestRestModel;
 
 import java.text.SimpleDateFormat;
@@ -25,44 +28,53 @@ public class WeatherDataLoader {
         return instance;
     }
 
-    public void renderWeather(WeatherRequestRestModel model, String city) {
-        Fragment fragment = CurrentFragment.getInstance().getFragment();
+    public void renderWeather(WeatherRequestRestModel model) {
+        String temperature = getCurrentTemp(model.main.temp);
+        String date = getUpdateDate(model.dt);
+        float floatTemp = model.main.temp;
+
+        WeatherContainer.getInstance().setTemperature(temperature);
+        WeatherContainer.getInstance().setDate(date);
+        WeatherContainer.getInstance().setFloatTemp(floatTemp);
 
         setDetails(model.weather[0].description);
-        setCurrentTemp(model.main.temp);
-        setUpdatedText(model.dt);
         setWindSpeed(model.wind.speed);
         setWeatherIcon(model.weather[0].id,
                 model.sys.sunrise * 1000,
                 model.sys.sunset * 1000);
 
-        if (fragment instanceof CitiesFragment) {
-            CitiesFragment citiesFragment = (CitiesFragment) fragment;
-            citiesFragment.showWeather(city);
-        } else if (fragment instanceof SearchCityFragment) {
-            SearchCityFragment searchCityFragment = (SearchCityFragment) fragment;
-            searchCityFragment.showWeather(city);
-        }
+        SearchCityFragment fragment = CurrentFragment.getInstance().getFragment();
+        String city = model.name;
+        fragment.showWeather(city);
+    }
+
+    public void saveCityWeather(WeatherRequestRestModel model) {
+        City city = new City();
+
+        String cityName = model.name;
+        String temperature = getCurrentTemp(model.main.temp);
+        String date = getUpdateDate(model.dt);
+
+        city.city = cityName;
+
+        city.info = new Info();
+        city.info.date = date;
+        city.info.temperature = temperature;
+
+        EventBus.getBus().post(new AddedCityEvent(city));
     }
 
     private void setDetails(String description) {
-        String detailsText = description.toUpperCase();
-
-        WeatherContainer.getInstance().setDescription(detailsText);
+        WeatherContainer.getInstance().setDescription(description);
     }
 
-    private void setCurrentTemp(float temp) {
-        String currentTextText = String.format(Locale.getDefault(), "%.2f",
+    private String getCurrentTemp(float temp) {
+        return String.format(Locale.getDefault(), "%.2f",
                 temp) + "\u2103";
-
-        WeatherContainer.getInstance().setTemperature(currentTextText);
-        WeatherContainer.getInstance().setTemp(temp);
     }
 
-    private void setUpdatedText(long dt) {
-        String updateOn = new SimpleDateFormat("dd/MM").format(new Date(dt * 1000));
-
-        WeatherContainer.getInstance().setDate(updateOn);
+    private String getUpdateDate(long dt) {
+        return new SimpleDateFormat("dd/MM").format(new Date(dt * 1000));
     }
 
     private void setWindSpeed(float speed) {

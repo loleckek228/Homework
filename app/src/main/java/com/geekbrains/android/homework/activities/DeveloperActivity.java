@@ -1,9 +1,11 @@
-package com.geekbrains.android.homework;
+package com.geekbrains.android.homework.activities;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.geekbrains.android.homework.R;
 
 public class DeveloperActivity extends AppCompatActivity {
     @Override

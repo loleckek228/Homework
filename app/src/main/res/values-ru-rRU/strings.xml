@@ -20,8 +20,13 @@
     <string name="title_settings">Настройки</string>
     <string name="developer_name">Я есть Георгий!</string>
     <string name="weather_description">WeatherDescription</string>
+    <string name="icon">Иконка</string>
     <string name="error">Ошибка!</string>
     <string name="not_found">не найден!</string>
     <string name="search_city">Поиск города</string>
     <string name="network_problem">Проблемы с сетью!</string>
+    <string name="title_image">Фотография</string>
+    <string name="title_clear_history">Очистить историю</string>
+    <string name="remove">Удалить</string>
+    <string name="title_weather">Погода</string>
 </resources>

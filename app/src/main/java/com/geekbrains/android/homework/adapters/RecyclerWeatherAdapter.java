@@ -1,4 +1,4 @@
-package com.geekbrains.android.homework;
+package com.geekbrains.android.homework.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.geekbrains.android.homework.R;
+import com.geekbrains.android.homework.ThermometerView;
+import com.geekbrains.android.homework.Weather;
 
 public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeatherAdapter.ViewHolder> {
     private Weather[] weathers;
@@ -37,7 +41,7 @@ public class RecyclerWeatherAdapter extends RecyclerView.Adapter<RecyclerWeather
     private void setText(@NonNull ViewHolder holder, int position) {
         holder.dataListItemTextView.setText(weathers[position].getDate());
         holder.temperatureListItemTextView.setText(weathers[position].getTemperature());
-        holder.thermometerView.setCurrentTemp(weathers[position].getTemp());
+        holder.thermometerView.setCurrentTemp(weathers[position].getFloatTemp());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,8 +1,8 @@
 package com.geekbrains.android.homework.fragments.searchCities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,34 +15,48 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.geekbrains.android.homework.App;
+import com.geekbrains.android.homework.CitiesSource;
 import com.geekbrains.android.homework.CurrentFragment;
+import com.geekbrains.android.homework.EventBus;
 import com.geekbrains.android.homework.OnDialogListener;
 import com.geekbrains.android.homework.R;
-import com.geekbrains.android.homework.RecyclerCitiesAdapter;
-import com.geekbrains.android.homework.WeatherActivity;
 import com.geekbrains.android.homework.WeatherContainer;
+import com.geekbrains.android.homework.adapters.RecyclerCitiesAdapter;
+import com.geekbrains.android.homework.dao.CitiesDao;
+import com.geekbrains.android.homework.events.AddedCityEvent;
 import com.geekbrains.android.homework.fragments.SearchBottomSheerDialogFragment;
 import com.geekbrains.android.homework.fragments.WeatherFragment;
+import com.geekbrains.android.homework.model.City;
+import com.geekbrains.android.homework.weatherData.RetrievesWeatherData;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public class SearchCityFragment extends Fragment {
     private SearchBottomSheerDialogFragment dialogFragment;
-    private RecyclerCitiesAdapter adapter = null;
-    private SearchCityViewModel searchCityViewModel;
-    private ArrayList<String> citiesList;
-    private ArrayList<String> searchCitiesList;
-    private RecyclerView recyclerView;
+    private RecyclerCitiesAdapter adapter;
+    private CitiesSource citiesSource;
     private View view;
 
     private boolean isExistWeather;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getBus().unregister(this);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,14 +67,7 @@ public class SearchCityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        searchCityViewModel = new ViewModelProvider(getActivity()).get(SearchCityViewModel.class);
-
-        View root = inflater.inflate(R.layout.fragment_search_city, container, false);
-
-        searchCityViewModel.getCities().observe(getViewLifecycleOwner(), cities -> {
-            initList(cities);
-        });
-        return root;
+        return inflater.inflate(R.layout.fragment_search_city, container, false);
     }
 
     @Override
@@ -68,13 +75,11 @@ public class SearchCityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
 
-        citiesList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.citiesArray)));
-
-        if (searchCitiesList == null) {
-            searchCitiesList = new ArrayList<>();
-        }
-
         isExistWeather = checkOrientation();
+
+        initList();
+
+        CurrentFragment.getInstance().setFragment(this);
     }
 
     @Override
@@ -91,9 +96,14 @@ public class SearchCityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.toolbar_search, menu);
+        inflater.inflate(R.menu.toolbar_menu_searchcity, menu);
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_listitem, menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -101,30 +111,28 @@ public class SearchCityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initList(ArrayList<String> cities) {
-        searchCitiesList = cities;
-        CurrentFragment.getInstance().setFragment(this);
-        adapter = new RecyclerCitiesAdapter(searchCitiesList, isExistWeather);
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        handleMenuItemClick(item);
+        return super.onContextItemSelected(item);
+    }
+
+    private void initList() {
+        RecyclerView recyclerView = view.findViewById(R.id.searchCitiesRecyclerView);
+        recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-        recyclerView = view.findViewById(R.id.searchCitiesRecyclerView);
+        CitiesDao citiesDao = App
+                .getInstance()
+                .getCitiesDao();
+
+        citiesSource = new CitiesSource(citiesDao);
+
+        adapter = new RecyclerCitiesAdapter(citiesSource, this);
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-    }
-
-    private void handleMenuItemClick(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.menu_search) {
-                dialogFragment = new SearchBottomSheerDialogFragment().newInstance();
-                dialogFragment.setOnDialogListener(dialogListener);
-                dialogFragment.show(getActivity().getSupportFragmentManager(), "dialog_fragment");
-        }
-    }
-
-    private boolean checkCity(String city) {
-        return searchCitiesList.contains(city) || citiesList.contains(city);
     }
 
     private boolean checkOrientation() {
@@ -133,12 +141,7 @@ public class SearchCityFragment extends Fragment {
     }
 
     private void addCity(String city) {
-        if (!checkCity(city)) {
-            searchCitiesList.add(city);
-            searchCityViewModel.setCities(searchCitiesList);
-
-            Snackbar.make(view, R.string.city_founded, Snackbar.LENGTH_SHORT).show();
-        }
+        RetrievesWeatherData.getInstance().updateWeatherData(city, false);
     }
 
     private OnDialogListener dialogListener = new OnDialogListener() {
@@ -149,15 +152,34 @@ public class SearchCityFragment extends Fragment {
 
         @Override
         public void onDialogBack() {
-
         }
     };
+
+    @Subscribe
+    @SuppressWarnings("unused")
+    public void onAddedCityEvent(AddedCityEvent event) {
+        City city = event.city;
+
+        for (City cityItem : citiesSource.getCities()) {
+            if (city.equals(cityItem)) {
+                citiesSource.updateCity(city);
+
+                adapter.notifyItemChanged((int) adapter.getListPosition());
+                return;
+            }
+        }
+
+        citiesSource.addCity(city);
+        adapter.notifyDataSetChanged();
+
+        Snackbar.make(view, R.string.city_founded, Snackbar.LENGTH_SHORT).show();
+    }
 
     public void showWeather(String city) {
         if (isExistWeather) {
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             WeatherFragment detail = (WeatherFragment)
-                    Objects.requireNonNull(fragmentManager).findFragmentById(R.id.weather);
+                    requireNonNull(fragmentManager).findFragmentById(R.id.weather);
 
             if (detail == null || WeatherContainer.getInstance().getCity() != city) {
 
@@ -172,10 +194,40 @@ public class SearchCityFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         } else {
-            Intent intentContainer = new Intent();
-            intentContainer.setClass(Objects.requireNonNull(getActivity()), WeatherActivity.class);
             WeatherContainer.getInstance().setCity(city);
-            startActivity(intentContainer);
+            Navigation.findNavController(view).navigate(R.id.navigation_weather);
+        }
+    }
+
+    private void handleMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_search:
+                dialogFragment = new SearchBottomSheerDialogFragment().newInstance();
+                dialogFragment.setOnDialogListener(dialogListener);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), "dialog_fragment");
+
+                break;
+            case R.id.menu_clear_history:
+                citiesSource.clearCities();
+                adapter.notifyDataSetChanged();
+
+                break;
+            case R.id.menu_remove_city:
+                City cityForRemove = citiesSource
+                        .getCities()
+                        .get(adapter.getListPosition());
+
+                citiesSource.removeCity(cityForRemove.id);
+                adapter.notifyDataSetChanged();
+
+                break;
+            case R.id.menu_sort_by_city:
+                citiesSource.sortByCity();
+                adapter.notifyDataSetChanged();
+
+                break;
         }
     }
 }

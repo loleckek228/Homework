@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_cities">
+    app:startDestination="@+id/navigation_weather">
 
     <fragment
-        android:id="@+id/navigation_cities"
-        android:name="com.geekbrains.android.homework.fragments.CitiesFragment"
-        android:label="@string/title_cities"
-        tools:layout="@layout/fragment_citieslist" />
+        android:id="@+id/navigation_weather"
+        android:name="com.geekbrains.android.homework.fragments.WeatherFragment"
+        android:label="@string/title_weather" />
 
     <fragment
         android:id="@+id/navigation_search_city"
