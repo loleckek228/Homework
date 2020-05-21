@@ -1,10 +1,14 @@
 package com.geekbrains.android.homework.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +20,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.geekbrains.android.homework.R;
+import com.geekbrains.android.homework.notifications.BatteryStatusReceiver;
+import com.geekbrains.android.homework.notifications.NetworkStatusReceiver;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
+    private BroadcastReceiver networkStatusReceiver = new NetworkStatusReceiver();
+    private BroadcastReceiver batteryStatusReceiver = new BatteryStatusReceiver();
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private Toolbar toolbar;
@@ -44,11 +52,22 @@ public class MainActivity extends AppCompatActivity {
                 .setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        if (getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE) {
+        changeFragmentWithLandscapeOrientation();
 
-            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.navigation_search_city);
+        registerReceivers();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            String data = (String) getIntent().getExtras().get("ticketId");
+            Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+        } catch (NullPointerException exc) {
+            Log.e("TAG", "NullPointer in MainActivity! First launch?");
         }
+
     }
 
     private void initViews() {
@@ -86,5 +105,19 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DeveloperActivity.class);
             startActivity(intent);
         }
+    }
+
+    private void changeFragmentWithLandscapeOrientation() {
+        if (getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE) {
+
+            Navigation.findNavController(this, R.id.nav_host_fragment)
+                    .navigate(R.id.navigation_search_city);
+        }
+    }
+
+    private void registerReceivers() {
+        registerReceiver(networkStatusReceiver, new IntentFilter("android.net.wifi.STATE_CHANGE"));
+        registerReceiver(batteryStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
     }
 }
