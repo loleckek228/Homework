@@ -193,7 +193,7 @@ public class SearchCityFragment extends Fragment {
             }
         } else {
             WeatherContainer.getInstance().setCity(city);
-            Navigation.findNavController(view).navigate(R.id.navigation_weather);
+            Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_weather);
         }
     }
 
