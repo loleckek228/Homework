@@ -29,4 +29,13 @@
             android:icon="@drawable/ic_setting"
             android:title="@string/title_settings" />
     </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/navigation_auth_google"
+                android:icon="@drawable/ic_attention"
+                android:title="@string/title_auth_google" />
+        </menu>
+    </item>
 </menu>

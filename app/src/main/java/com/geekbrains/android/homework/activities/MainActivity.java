@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_search_city, R.id.navigation_weather,
                 R.id.navigation_maps, R.id.navigation_developer,
-                R.id.navigation_settings)
+                R.id.navigation_settings, R.id.navigation_auth_google)
                 .setDrawerLayout(drawer)
                 .build();
 
