@@ -11,13 +11,13 @@
     <item
         android:id="@+id/menu_sort"
         android:icon="@drawable/ic_sort"
-        android:title="sort"
+        android:title="@string/title_sort"
         app:showAsAction="ifRoom">
 
         <menu>
             <item
                 android:id="@+id/menu_sort_by_city"
-                android:title="City" />
+                android:title="@string/title_sort_by_city" />
         </menu>
     </item>
 

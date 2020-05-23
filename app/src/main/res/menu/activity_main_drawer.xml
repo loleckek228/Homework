@@ -5,13 +5,19 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/navigation_search_city"
+            android:icon="@drawable/ic_city"
+            android:title="@string/title_search_city" />
+
+        <item
             android:id="@+id/navigation_weather"
             android:icon="@drawable/ic_weather"
             android:title="@string/title_weather" />
+
         <item
-            android:id="@+id/navigation_search_city"
-            android:icon="@drawable/ic_city"
-            android:title="@string/search_city" />
+            android:id="@+id/navigation_maps"
+            android:icon="@drawable/ic_map"
+            android:title="@string/title_maps" />
 
         <item
             android:id="@+id/navigation_developer"
@@ -23,5 +29,4 @@
             android:icon="@drawable/ic_setting"
             android:title="@string/title_settings" />
     </group>
-
 </menu>

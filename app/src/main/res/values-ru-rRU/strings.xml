@@ -29,4 +29,10 @@
     <string name="title_clear_history">Очистить историю</string>
     <string name="remove">Удалить</string>
     <string name="title_weather">Погода</string>
+    <string name="title_sort">Сортировать</string>
+    <string name="title_sort_by_city">Город</string>
+    <string name="title_location">Местоположение</string>
+    <string name="title_maps">Карта</string>
+    <string name="currentPosition">Текущая позиция!</string>
+    <string name="bad_weather">Плохая погода!</string>
 </resources>

@@ -1,12 +1,11 @@
 package com.geekbrains.android.homework;
 
-import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
+import com.geekbrains.android.homework.fragments.SearchCityFragment;
 
 public class CurrentFragment {
     private static CurrentFragment instance;
 
-    private CurrentFragment() {
-    }
+    private CurrentFragment() {}
 
     public static CurrentFragment getInstance() {
         if (instance == null) {
@@ -18,11 +17,11 @@ public class CurrentFragment {
 
     private SearchCityFragment fragment;
 
-    public void setFragment(SearchCityFragment fragment) {
-        this.fragment = fragment;
-    }
-
     public SearchCityFragment getFragment() {
         return fragment;
+    }
+
+    public void setFragment(SearchCityFragment fragment) {
+        this.fragment = fragment;
     }
 }

@@ -11,7 +11,7 @@ public class Notification {
     public Notification(Context context, int icon, String notificationText) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "2")
                 .setSmallIcon(icon)
-                .setContentTitle("Network Status Info")
+                .setContentTitle("Information")
                 .setContentText(notificationText);
 
         NotificationManager notificationManager =

@@ -3,17 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_weather">
+    app:startDestination="@+id/navigation_search_city">
+
+
+    <fragment
+        android:id="@+id/navigation_search_city"
+        android:name="com.geekbrains.android.homework.fragments.SearchCityFragment"
+        android:label="@string/title_search_city"
+        tools:layout="@layout/fragment_search_city" />
 
     <fragment
         android:id="@+id/navigation_weather"
         android:name="com.geekbrains.android.homework.fragments.WeatherFragment"
-        android:label="@string/title_weather" />
+        android:label="@string/title_weather"
+        tools:layout="@layout/fragment_weather" />
 
     <fragment
-        android:id="@+id/navigation_search_city"
-        android:name="com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment"
-        android:label="@string/title_search_city" />
+        android:id="@+id/navigation_maps"
+        android:name="com.geekbrains.android.homework.fragments.MapFragment"
+        android:label="@string/title_maps"
+        tools:layout="@layout/activity_maps" />
 
     <fragment
         android:id="@+id/navigation_developer"

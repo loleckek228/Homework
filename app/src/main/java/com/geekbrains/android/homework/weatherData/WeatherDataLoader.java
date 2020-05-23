@@ -1,12 +1,16 @@
 package com.geekbrains.android.homework.weatherData;
 
+import androidx.fragment.app.Fragment;
+
 import com.geekbrains.android.homework.CurrentFragment;
 import com.geekbrains.android.homework.EventBus;
+import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.WeatherContainer;
 import com.geekbrains.android.homework.events.AddedCityEvent;
-import com.geekbrains.android.homework.fragments.searchCities.SearchCityFragment;
+import com.geekbrains.android.homework.fragments.SearchCityFragment;
 import com.geekbrains.android.homework.model.City;
 import com.geekbrains.android.homework.model.Info;
+import com.geekbrains.android.homework.notifications.Notification;
 import com.geekbrains.android.homework.rest.entities.WeatherRequestRestModel;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +33,9 @@ public class WeatherDataLoader {
     }
 
     public void renderWeather(WeatherRequestRestModel model) {
+
+//        saveCityWeather(model);
+
         String temperature = getCurrentTemp(model.main.temp);
         String date = getUpdateDate(model.dt);
         float floatTemp = model.main.temp;
@@ -37,15 +44,21 @@ public class WeatherDataLoader {
         WeatherContainer.getInstance().setDate(date);
         WeatherContainer.getInstance().setFloatTemp(floatTemp);
 
-        setDetails(model.weather[0].description);
-        setWindSpeed(model.wind.speed);
+        String description = model.weather[0].description;
+        float windSpeed = model.wind.speed;
+
+        setDetails(description);
+        setWindSpeed(windSpeed);
         setWeatherIcon(model.weather[0].id,
                 model.sys.sunrise * 1000,
                 model.sys.sunset * 1000);
 
         SearchCityFragment fragment = CurrentFragment.getInstance().getFragment();
+
         String city = model.name;
+
         fragment.showWeather(city);
+        pushNotificationAboutBadWeather(floatTemp, windSpeed);
     }
 
     public void saveCityWeather(WeatherRequestRestModel model) {
@@ -125,5 +138,13 @@ public class WeatherDataLoader {
         }
 
         WeatherContainer.getInstance().setIcon(icon);
+    }
+
+    private void pushNotificationAboutBadWeather(float temp, float speed) {
+        Fragment fragment = CurrentFragment.getInstance().getFragment();
+
+        if (temp < -15 && speed > 10) {
+            new Notification(fragment.getContext(), R.drawable.ic_attention , fragment.getString(R.string.bad_weather));
+        }
     }
 }

@@ -20,6 +20,7 @@ public class SearchBottomSheerDialogFragment extends BottomSheetDialogFragment {
     public static SearchBottomSheerDialogFragment newInstance() {
         return new SearchBottomSheerDialogFragment();
     }
+
     public void setOnDialogListener (OnDialogListener dialogListener) {
         this.dialogListener = dialogListener;
     }

@@ -29,4 +29,11 @@
     <string name="title_clear_history">Clear history</string>
     <string name="remove">Remove</string>
     <string name="title_weather">Weather</string>
+    <string name="title_sort">sort</string>
+    <string name="title_sort_by_city">City</string>
+    <string name="title_location">location</string>
+    <string name="title_maps">Maps</string>
+    <string name="currentPosition">Current position!</string>
+    <string name="bad_weather">Bad Weather!</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.geekbrains.android.homework.fragments.searchCities;
+package com.geekbrains.android.homework.fragments;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -29,8 +29,6 @@ import com.geekbrains.android.homework.WeatherContainer;
 import com.geekbrains.android.homework.adapters.RecyclerCitiesAdapter;
 import com.geekbrains.android.homework.dao.CitiesDao;
 import com.geekbrains.android.homework.events.AddedCityEvent;
-import com.geekbrains.android.homework.fragments.SearchBottomSheerDialogFragment;
-import com.geekbrains.android.homework.fragments.WeatherFragment;
 import com.geekbrains.android.homework.model.City;
 import com.geekbrains.android.homework.weatherData.RetrievesWeatherData;
 import com.google.android.material.snackbar.Snackbar;
@@ -75,11 +73,11 @@ public class SearchCityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         this.view = view;
 
+        CurrentFragment.getInstance().setFragment(this);
+
         isExistWeather = checkOrientation();
 
         initList();
-
-        CurrentFragment.getInstance().setFragment(this);
     }
 
     @Override
@@ -140,8 +138,8 @@ public class SearchCityFragment extends Fragment {
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    private void addCity(String city) {
-        RetrievesWeatherData.getInstance().updateWeatherData(city, false);
+    public void addCity(String city) {
+        RetrievesWeatherData.getInstance().updateWeatherData( city, false);
     }
 
     private OnDialogListener dialogListener = new OnDialogListener() {
@@ -158,13 +156,13 @@ public class SearchCityFragment extends Fragment {
     @Subscribe
     @SuppressWarnings("unused")
     public void onAddedCityEvent(AddedCityEvent event) {
-        City city = event.city;
+        City city = event.getCity();
 
         for (City cityItem : citiesSource.getCities()) {
             if (city.equals(cityItem)) {
                 citiesSource.updateCity(city);
 
-                adapter.notifyItemChanged((int) adapter.getListPosition());
+                adapter.notifyItemChanged(adapter.getListPosition());
                 return;
             }
         }

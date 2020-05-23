@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.geekbrains.android.homework.LocationFinder;
 import com.geekbrains.android.homework.R;
 import com.geekbrains.android.homework.Weather;
 import com.geekbrains.android.homework.WeatherContainer;
@@ -31,16 +32,13 @@ import com.squareup.picasso.Picasso;
 
 public class WeatherFragment extends Fragment {
     private SharedPreferences activityPrefs;
-    private RecyclerView temperatureRecyclerView;
     private TextClock timeTextView;
     private TextView cityTextView;
     private TextView windSpeedTextView;
     private TextView weatherIconTextView;
     private TextView weatherDescriptionTextView;
-    private Typeface weatherFont;
     private View view;
 
-    private final String namedPrefsKey = "named_prefs";
     private final String cityKey = "city_key";
     private final String dateKey = "date_key";
     private final String iconKey = "icon_key";
@@ -53,6 +51,13 @@ public class WeatherFragment extends Fragment {
         WeatherFragment fragment = new WeatherFragment();
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -68,18 +73,18 @@ public class WeatherFragment extends Fragment {
 
         activityPrefs = getActivity().getPreferences(Context.MODE_PRIVATE);
 
+        registerForContextMenu(view);
+        initViews();
+        updateWeather();
+        initFonts();
+        initRecyclerView();
+        setColourOfTextView();
+
         if (getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE) {
 
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_search_city);
         }
-
-        registerForContextMenu(view);
-        initViews();
-        getInfo();
-        initFonts();
-        initRecyclerView();
-        setColourOfTextView();
     }
 
     private void initViews() {
@@ -91,7 +96,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void initFonts() {
-        weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
+        Typeface weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
         weatherIconTextView.setTypeface(weatherFont);
     }
 
@@ -103,7 +108,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        temperatureRecyclerView = view.findViewById(R.id.temperatureRecyclerVIew);
+        RecyclerView temperatureRecyclerView = view.findViewById(R.id.temperatureRecyclerVIew);
 
         float floatTemp;
 
@@ -124,14 +129,13 @@ public class WeatherFragment extends Fragment {
 
         RecyclerWeatherAdapter adapter = new RecyclerWeatherAdapter(new Weather[]{weather});
 
-
         LinearLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
 
         temperatureRecyclerView.setLayoutManager(layoutManager);
         temperatureRecyclerView.setAdapter(adapter);
     }
 
-    private void getInfo() {
+    public void updateWeather() {
         String city = WeatherContainer.getInstance().getCity();
         String windSpeed = WeatherContainer.getInstance().getWindSpeed();
         String weatherDescription = WeatherContainer.getInstance().getDescription();
@@ -155,10 +159,9 @@ public class WeatherFragment extends Fragment {
         getActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
-
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        loadImageWithPicasso();
+       handleMenuItemClick(item);
         return super.onContextItemSelected(item);
     }
 
@@ -167,6 +170,17 @@ public class WeatherFragment extends Fragment {
         Picasso.get()
                 .load("https://images.unsplash.com/photo-1469829638725-69bf13ad6801?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60")
                 .into(image);
+    }
+
+    private void handleMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_open_image:
+                loadImageWithPicasso();
+
+                break;
+        }
     }
 
     private void saveToPreference(SharedPreferences preferences) {
@@ -200,10 +214,13 @@ public class WeatherFragment extends Fragment {
         String weatherDescription =
                 preferences.getString(descriptionKey, getString(R.string.weather_description));
 
+        if (city.equals(getString(R.string.city))) {
+            LocationFinder.getInstance().findCityByLocation(getActivity());
+        }
+
         cityTextView.setText(city);
         windSpeedTextView.setText(windSpeed);
         weatherDescriptionTextView.setText(weatherDescription);
         weatherIconTextView.setText(weatherIcon);
     }
-
 }

@@ -1,10 +1,10 @@
 package com.geekbrains.android.homework.weatherData;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.geekbrains.android.homework.CurrentFragment;
 import com.geekbrains.android.homework.fragments.DialogBuilderFragment;
+import com.geekbrains.android.homework.fragments.SearchCityFragment;
 import com.geekbrains.android.homework.rest.OpenWeatherRepo;
 import com.geekbrains.android.homework.rest.entities.WeatherRequestRestModel;
 
@@ -32,8 +32,8 @@ public class RetrievesWeatherData {
 
     private DialogBuilderFragment dialogBuilderFragment;
 
-    public void updateWeatherData(final String city, boolean isListItem) {
-        Fragment fragment = CurrentFragment.getInstance().getFragment();
+    public void updateWeatherData(final String city, boolean isShowCity) {
+        SearchCityFragment fragment = CurrentFragment.getInstance().getFragment();
 
         OpenWeatherRepo.getSingleton().getAPI().loadWeather(city,
                 OPEN_WEATHER_API_KEY, UNITS)
@@ -42,7 +42,7 @@ public class RetrievesWeatherData {
                     public void onResponse(@NonNull Call<WeatherRequestRestModel> call,
                                            @NonNull Response<WeatherRequestRestModel> response) {
                         if (response.body() != null && response.isSuccessful()) {
-                            if (isListItem) {
+                            if (isShowCity) {
                                 WeatherDataLoader.getInstance().renderWeather(response.body());
                             } else {
                                 WeatherDataLoader.getInstance().saveCityWeather(response.body());
