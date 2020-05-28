@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "821619888656",
+    "firebase_url": "https://weather-489fe.firebaseio.com",
+    "project_id": "weather-489fe",
+    "storage_bucket": "weather-489fe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821619888656:android:892cd4ced6d94f7a6f3095",
+        "android_client_info": {
+          "package_name": "com.geekbrains.android.homework"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "821619888656-e9fudmi1eopj88oq1964o51c34r6cukh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1lxWC5ybrGV2bzmc5JImpgoGyo4IHCys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "821619888656-e9fudmi1eopj88oq1964o51c34r6cukh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

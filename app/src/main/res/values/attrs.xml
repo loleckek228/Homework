@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ThermometerView">
+        <attr name="radius" format="dimension"/>
+        <attr name="thermometer_color" format="color"/>
+        <attr name="inner_color" format="color"/>
+        <attr name="temperature_positive_color" format="color"/>
+        <attr name="temperature_negative_color" format="color"/>
+    </declare-styleable>
+</resources>
