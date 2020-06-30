@@ -35,5 +35,6 @@
     <string name="title_maps">Maps</string>
     <string name="currentPosition">Current position!</string>
     <string name="bad_weather">Bad Weather!</string>
+    <string name="title_auth_google">Authorisation</string>
 
 </resources>

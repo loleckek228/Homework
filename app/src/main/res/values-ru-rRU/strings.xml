@@ -35,4 +35,5 @@
     <string name="title_maps">Карта</string>
     <string name="currentPosition">Текущая позиция!</string>
     <string name="bad_weather">Плохая погода!</string>
+    <string name="title_auth_google">Авторизация</string>
 </resources>
